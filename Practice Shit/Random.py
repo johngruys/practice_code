@@ -3,11 +3,11 @@
 
 def f(x):
     import math
-    return (4 * math.log ((x / 10**-5), 10))
+    return (4 * math.log((x / 10**-5), 12))
 
 print (f(4))
 
-print(f(10**-3))
+print (f(10**-3))
 
 
 
