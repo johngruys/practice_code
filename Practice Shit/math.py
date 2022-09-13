@@ -15,4 +15,4 @@ p = int(input ())
 print ("Please input the rate of interest (Where '1' represents 100%)")
 r = int(input ())
 
-print (pert(p, r, t))
+print (pert(p, r, t)) 
