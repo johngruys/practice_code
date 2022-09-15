@@ -1,10 +1,10 @@
-# Practice with if/elif
+# Define the sum function
+def sum(num_a, num_b):
+    return num_a + num_b 
 
-def f(x):
-    return 2 * x 
+num_a = int(input("Number 1: "))
+num_b = int(input("Number 2: "))
 
-x = 12
+sum = sum(num_a, num_b)
 
-if "." in str(x/2):
-    print (f(x))
-
+print(sum)
