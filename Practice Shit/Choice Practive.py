@@ -1,10 +1,8 @@
 # Practice with if/elif
 
-def f(x):
-    return 2 * x 
+numlist = [1, 2, 3, 4, 5, 'a', 'b']
 
-x = 12
+nttest = "hello242"
 
-if "." in str(x/2):
-    print (f(x))
+print(nttest[2])
 
