@@ -1,2 +1,6 @@
-dict = {0: "june", 1: "july"}
-print (dict["june"])
+import math
+for i in range(1, 11):
+    for j in range (1, 11):
+        output = i * j  
+        print (output, "\t", end = "") 
+    print("")
