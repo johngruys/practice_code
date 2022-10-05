@@ -1,9 +1,3 @@
-dict = {}
-for num in range(1):
-    dict[num] = ["balls"]
-
-print (dict)
- 
-test = 2 in dict
-
-print(test)
+lst = ['x', [1, 2, 3, 4], [1, [2, [5]]]]
+for item in lst:
+    print(type(item))
