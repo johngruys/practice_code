@@ -6,13 +6,9 @@
 
 
 def fac(x):
-    numbers = []
-    for num in range(x):
-        numbers += [num+1]
-
     product = 1
-    for factor in numbers:
-        product = product * factor
+    for num in range(x):
+        product = product * (num + 1)
 
     return product
 
