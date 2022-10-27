@@ -5,11 +5,16 @@
 #         return x * fac(x-1)
 
 
-def fac(x):
-    product = 1
-    for num in range(x):
-        product = product * (num + 1)
+# def fac(x):
+#     product = 1
+#     for num in range(x):
+#         product = product * (num + 1)
 
-    return product
+#     return product
 
-print (fac(99999))
+
+
+# def f(x, y):
+#     return int(x, y)
+
+print(((13//2)//2) % 2)
