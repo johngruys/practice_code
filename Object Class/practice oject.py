@@ -1,13 +1,19 @@
+
 class Person():
     def __init__(self, name, age):
         self.name = name
         self.age = age
     def __str__(self):
-        return self.name + ", " + str(self.age)
+        return f"{self.name}, {self.age}"
     def get_contact(self):
-        return self.name 
+        return f"Hi, my name is {self.name}"
 
-person1 = Person("Bob", 954)
+person1 = Person("Bob", 4)
+g = input()
 
-print(person1)
+
+print(type(g))
+ 
+
+
 
