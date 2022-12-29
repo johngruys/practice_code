@@ -2,7 +2,6 @@ import pygame as py
 import random
 import math 
 from pygame import mixer
-import time
 
 
 ### Initialize Pygame ###
@@ -12,7 +11,7 @@ py.init()
 ### Create screen ###
 screen = py.display.set_mode((800, 600))
 
-background = py.image.load("Games/sitest.py/SIAssets/background.png")
+background = py.image.load("Games/sitest/SIAssets/background.png")
 
 ### Background music ###
 game_ended = False
@@ -102,7 +101,7 @@ def game_over():
     game_ended = True
     playerY = 2000
     playerX_change = 0
-    el = py.image.load("Games/Space Invaders/SIAssets/L.png")
+    el = py.image.load("Games/sitest/SIAssets/L.png")
     screen.blit(el, (playerX, 480))
     
 
