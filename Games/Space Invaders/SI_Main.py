@@ -1,6 +1,8 @@
 import pygame as py
 import random
 import math 
+from pygame import mixer
+
 
 ### Initialize Pygame ###
 py.init()
@@ -11,12 +13,19 @@ screen = py.display.set_mode((800, 600))
 
 background = py.image.load("Games/Space Invaders/SIAssets/background.png")
 
+### Background music ###
+game_ended = False
+mixer.music.load("Games/Space Invaders/SIAssets/background.wav")
+mixer.music.play(-1)
+
 
 ### Title and icon ###
 py.display.set_caption("(IN) Vision")
 
 icon = py.image.load("Games/Space Invaders/SIAssets/vision_pixelated.png")
 py.display.set_icon(icon)
+
+
 
 ### Creating Player ###
 player_image = py.image.load("Games/Space Invaders/SIAssets/spaceship.png")
@@ -39,14 +48,19 @@ enemyY = []
 enemyX_change = []
 enemyY_change = []
 
-num_enemies = 6
+num_enemies = 1
+speed_multiplier = 1
+enemy_counter = 0
 
-for i in range(num_enemies):
-    enemy_image.append(py.image.load("Games/Space Invaders/SIAssets/alien.png"))
-    enemyX.append(random.randint(0, 736))
-    enemyY.append(random.randint(50, 250))
-    enemyX_change.append(0.15)
-    enemyY_change.append(30)
+def create_enemies(num_enemies):
+    for i in range(num_enemies):
+        enemy_image.append(py.image.load("Games/Space Invaders/SIAssets/alien.png"))
+        enemyX.append(random.randint(0, 736))
+        enemyY.append(random.randint(50, 250))
+        enemyX_change.append(random.randint(12, 17) / 100)
+        enemyY_change.append(speed_multiplier * 0.008)
+
+create_enemies(num_enemies)
 
 
 ### Bullet ###
@@ -60,11 +74,37 @@ laser_state = "ready"
 score_value = 0
 font = py.font.Font("freesansbold.ttf", 32)
 
+level_score_value = 0
+
 textX = 10
 textY = 10
 
+### Game Over ###
+
+text_color = (255, 180, 255)
+
+game_ended = False
+
+def game_over():
+    gg_font = py.font.Font("freesansbold.ttf", 65)
+    gg_text = "Game Over..."
+    score_text = "Final Score: "
+    disp_text1 = gg_font.render(gg_text, True, text_color)
+    disp_text2 = gg_font.render(score_text + str(score_value), True, text_color)
+    screen.blit(disp_text1, (140, 225))
+    screen.blit(disp_text2, (140, 325))
+    global game_ended 
+    global playerY
+    global playerX_change
+    game_ended = True
+    playerY = 2000
+    playerX_change = 0
+    el = py.image.load("Games/Space Invaders/SIAssets/L.png")
+    screen.blit(el, (playerX, 480))
+    
+
 def showscore(x, y):
-    score = font.render("Score:" + str(score_value), True, (255, 255, 255))
+    score = font.render("Score: " + str(score_value), True, text_color)
     screen.blit(score, (x, y))
 
 
@@ -89,8 +129,6 @@ def iscollision(enemyX, enemyY, laserX, laserY):
 
 
 
-
-
 ### Game loop ###
 
 running = True
@@ -101,24 +139,37 @@ while running:
 
     # Background Image
     screen.blit(background, (0, 0))
-   
 
-    # Checking if X out is pressed
+    # Game Loop #
     for event in py.event.get():
+
+        # Checking if X out is pressed
         if event.type == py.QUIT:
             running = False
 
+        # Level element
+        if level_score_value == 3:
+            enemy_counter += 1
+            speed_multiplier += 0.5
+            if enemy_counter == 4:
+                num_enemies += 1
+                enemy_counter = 0
+            level_score_value = 0
+            create_enemies(num_enemies)
+        
         ### If keystroke pressed, check right or left ###
-        if event.type == py.KEYDOWN:
-            if event.key == py.K_LEFT:
-                playerX_change = -0.1
-            if event.key == py.K_RIGHT:
-                playerX_change = 0.1
-            if event.key == py.K_SPACE:
-                # fire_laser(playerX, laserY)
-                if laser_state == "ready":
-                    laserX = playerX
-                    laser_state = "fire"
+        if not game_ended:
+            if event.type == py.KEYDOWN:
+                if event.key == py.K_LEFT:
+                    playerX_change = -0.25
+                if event.key == py.K_RIGHT:
+                    playerX_change = 0.25
+                if event.key == py.K_SPACE:
+                    if laser_state == "ready":
+                        laser_sound = mixer.Sound("Games/Space Invaders/SIAssets/laser.wav")
+                        laser_sound.play()
+                        laserX = playerX
+                        laser_state = "fire"
 
         if event.type == py.KEYUP:
             if event.key == py.K_LEFT or event.key == py.K_RIGHT:
@@ -140,20 +191,31 @@ while running:
     ### Boundary ###
     for i in range(num_enemies):
 
+        if enemyY[i] > 440:
+            for j in range(num_enemies):
+                enemyY[j] = 2000
+
+            game_over()
+
+            break
+            
+
         enemyX[i] += enemyX_change[i]
+        enemyY[i] += enemyY_change[i]
 
         if enemyX[i] <= 0:
             enemyX_change[i] = -1 * enemyX_change[i]
-            enemyY[i] += enemyY_change[i]
+            
         elif enemyX[i] >= 734:
             enemyX_change[i] = -1 * enemyX_change[i]
-            enemyY[i] += enemyY_change[i]
+            
 
         collision = iscollision(enemyX[i], enemyY[i], laserX, laserY)
         if collision:
             laserY = 480
             laser_state = "ready"
             score_value += 1
+            level_score_value += 1
             enemyX[i] = random.randint(0, 736)
             enemyY[i] = random.randint(50, 150)
 
