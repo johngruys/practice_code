@@ -2,6 +2,7 @@ import pygame as py
 import random
 import math 
 from pygame import mixer
+import time
 
 
 ### Initialize Pygame ###
@@ -33,6 +34,8 @@ playerX = 370
 playerY = 480
 playerX_change = 0
 playerY_change = 0
+left = False
+right = False
 
 ### Creating Enemy ###
 # enemy_image = py.image.load("Games/Space Invaders/SIAssets/alien.png")
@@ -57,8 +60,8 @@ def create_enemies(num_enemies):
         enemy_image.append(py.image.load("Games/Space Invaders/SIAssets/alien.png"))
         enemyX.append(random.randint(0, 736))
         enemyY.append(random.randint(50, 250))
-        enemyX_change.append(random.randint(12, 17) / 100)
-        enemyY_change.append(speed_multiplier * 0.008)
+        enemyX_change.append(random.randint(29, 42) / 10)
+        enemyY_change.append(speed_multiplier * 0.08)
 
 create_enemies(num_enemies)
 
@@ -67,7 +70,7 @@ create_enemies(num_enemies)
 laser_image = py.image.load("Games/Space Invaders/SIAssets/laser.png")
 laserX = 0
 laserY = 480
-laserY_change = -.75
+laserY_change = -10
 laser_state = "ready"
 
 ### Score ###
@@ -161,9 +164,13 @@ while running:
         if not game_ended:
             if event.type == py.KEYDOWN:
                 if event.key == py.K_LEFT:
-                    playerX_change = -0.25
+                    # playerX_change = -5
+                    left = True
                 if event.key == py.K_RIGHT:
-                    playerX_change = 0.25
+                    # playerX_change = 5
+                    right = True
+
+
                 if event.key == py.K_SPACE:
                     if laser_state == "ready":
                         laser_sound = mixer.Sound("Games/Space Invaders/SIAssets/laser.wav")
@@ -172,8 +179,21 @@ while running:
                         laser_state = "fire"
 
         if event.type == py.KEYUP:
-            if event.key == py.K_LEFT or event.key == py.K_RIGHT:
-                playerX_change = 0
+            if event.key == py.K_LEFT:
+                left = False
+            elif event.key == py.K_RIGHT:
+                right = False
+        
+        if left == True and right == True or left == False and right == False:
+            playerX_change = 0
+
+        elif left == True:
+            playerX_change = -6
+        elif right == True:
+            playerX_change = 6
+
+
+        
 
     
     ### Increments the x position ###
@@ -251,6 +271,9 @@ while running:
     ### Show score ###
     showscore(textX, textY)
 
- 
+    ### Clock aspect ###
+    clock = py.time.Clock()
+    clock.tick(60)
+
     # Updates screen with all new info 
     py.display.update()
