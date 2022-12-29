@@ -2,14 +2,16 @@ import pygame as py
 
 ### Initialize ###
 py.init()
+
+# Run condition
 running = True
 
-### Screen ###
-# Create object #
+### Screen (Object) ###
 screen = py.display.set_mode((1000, 650))
 
 ### Title and Logo ###
 py.display.set_caption(" Dolphino")
+
 icon = py.image.load("Games/Dolphino/Assets/dolphin.png")
 py.display.set_icon(icon)
 
