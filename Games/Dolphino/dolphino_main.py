@@ -1,4 +1,5 @@
 import pygame as py
+import time
 from dolpino_classes import Dolphin
 
 ### Initialize ###
@@ -27,8 +28,23 @@ black = (0, 0, 0)
 lblue = (0, 255, 255)
 blue = (0, 0, 255)
 
+# MISC #
+charging = False
+jumping = False
+charge = None
+
 # Items #
 p1 = Dolphin()
+
+
+
+### Functions ###
+
+def jump():
+    p1.jump(charge)
+    
+
+
 
 
 
@@ -36,51 +52,82 @@ p1 = Dolphin()
 
 while running:
     
-    # White Background #
+    # Background #
     screen.fill(blue)
+
+    # Charge Background #
+    py.draw.rect(screen, black, (35, 35, 150, 35), 0, 4)
+    jump_text = "Jump Level"
+    jump_font = py.font.Font("freesansbold.ttf", 20)
+    disp_jump_text = jump_font.render(jump_text, True, black)
+    screen.blit(disp_jump_text, (53, 15))   
 
 
     ### User Input ###
     for event in py.event.get():
 
         if event.type == py.KEYDOWN:
-            if event.key == py.K_DOWN:
-                p1.y_movement(-1)
-            elif event.key == py.K_UP:
-                p1.y_movement(1)
-            elif event.key == py.K_LEFT:
-                p1.x_movement(-1)
-            elif event.key == py.K_RIGHT:
-                p1.x_movement(1)
+
+
+            if not jumping: # Cancel controls while jumping #
+
+                # Dolphin Movement #
+                if event.key == py.K_DOWN:
+                    p1.y_movement(-1)
+                elif event.key == py.K_UP:
+                    p1.y_movement(1)
+                elif event.key == py.K_LEFT:
+                    p1.x_movement(-1)
+                elif event.key == py.K_RIGHT:
+                    p1.x_movement(1)
+                
+                # Jump #
+                if event.key == py.K_SPACE:
+                    charging = True
+                    charge_start = time.time()
+
+
             
         if event.type == py.KEYUP:
-            if event.key == py.K_DOWN:
-                p1.y_movement(-2)
-            elif event.key == py.K_UP:
-                p1.y_movement(2)
-            elif event.key == py.K_LEFT:
-                p1.x_movement(-2)
-            elif event.key == py.K_RIGHT:
-                p1.x_movement(2)
+            
+            if not jumping: # Cancel controls while jumping #
 
+                # Dolphin Movement #
+                if event.key == py.K_DOWN:
+                    p1.y_movement(-2)
+                elif event.key == py.K_UP:
+                    p1.y_movement(2)
+                elif event.key == py.K_LEFT:
+                    p1.x_movement(-2)
+                elif event.key == py.K_RIGHT:
+                    p1.x_movement(2)
 
+                # Jump #
+                if event.key == py.K_SPACE:
+                    jumping = True
+                    charging = False
+                    jump()
 
-
-
-
-
-
-
-
-
+    
         # Closing Window #
         if event.type == py.QUIT:
             running = False
-    
-    
 
+    if charging == True:
+        charge = abs(charge_start - time.time())
+        
+
+        if (charge * 80) < 140:
+            py.draw.rect(screen, lblue, (40, 40, (charge * 80), 25), 0, 2)
+        else:
+            py.draw.rect(screen, lblue, (40, 40, 140, 25), 0, 2)
+    
+    
+    
     p1.update_position()
     screen.blit(p1.img, p1.position())
+
+    
     
 
     ### Update !!! ###

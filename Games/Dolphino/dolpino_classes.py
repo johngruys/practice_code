@@ -5,14 +5,23 @@ class Dolphin():
     # Initialize and define variables #
     def __init__(self):
         self.img = py.image.load("Games/Dolphino/Assets/character.png")
+
+        # Location #
         self.x = 200
         self.y = 200
-        self.dx = 0
-        self.dy = 0
+
+        # Speed #
+        self.x_speed = 3
+        self.y_speed = 2
+        self.x_jump_speed = 1
+        self.y_jump_speed = 4
+
+        # Movement Vars #
         self.right = False
         self.left = False
         self.up = False
         self.down = False
+        self.jumping = False
      
     # IDEK tbh #
     def __repr__(self):
@@ -32,6 +41,9 @@ class Dolphin():
             self.left = False
         elif x == 2:
             self.right = False
+        elif x == "stop":
+            self.right = False
+            self.left = False
     
     def y_movement(self, y):
         if y == 1:
@@ -42,21 +54,30 @@ class Dolphin():
             self.down = False
         elif y == 2:
             self.up = False
+        elif y == "stop":
+            self.up = False
+            self.down = False
         
     # Read the name of the function #
     def update_position(self):
+
         if self.right and not self.left:
-            self.x = self.x + 3
+            self.x = self.x + self.x_speed
         elif self.left and not self.right:
-            self.x = self.x - 3
+            self.x = self.x - self.x_speed
         
         if self.up and not self.down:
-            self.y = self.y - 3
+            self.y = self.y - self.y_speed
         elif self.down and not self.up:
-            self.y = self.y + 3
+            self.y = self.y + self.y_speed
 
     # Again, self explanatory #
     def position(self):
         return (self.x, self.y)
+
+    def jump(self, power):
+        self.right = False
+        self.left = False
+        self.jumping = True
         
         
