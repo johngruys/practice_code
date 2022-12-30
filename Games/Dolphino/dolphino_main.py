@@ -32,6 +32,8 @@ blue = (0, 0, 255)
 charging = False
 jumping = False
 charge = None
+jump_start = 0
+jump_duration = 0
 
 # Items #
 p1 = Dolphin()
@@ -39,12 +41,6 @@ p1 = Dolphin()
 
 
 ### Functions ###
-
-def jump():
-    p1.jump(charge)
-    
-
-
 
 
 
@@ -106,7 +102,8 @@ while running:
                 if event.key == py.K_SPACE:
                     jumping = True
                     charging = False
-                    jump()
+                    jump_start = time.time()
+                    p1.jump()
 
     
         # Closing Window #
@@ -116,19 +113,31 @@ while running:
     if charging == True:
         charge = abs(charge_start - time.time())
         
-
+        # Draw charge bar #
         if (charge * 80) < 140:
             py.draw.rect(screen, lblue, (40, 40, (charge * 80), 25), 0, 2)
         else:
             py.draw.rect(screen, lblue, (40, 40, 140, 25), 0, 2)
+
+    if jumping == True:
+        jump_duration = jump_start - time.time()
+        if p1.jump_up:
+            if jump_duration > (charge / 2):
+                p1.jump_down = True
+                p1.jump_up = False
+
+        elif p1.jump_down:
+            if jump_duration > charge:
+                p1.jump_down = False
+                jumping = False
+
+        
+        
     
-    
-    
+    ### Redraw character ###
     p1.update_position()
     screen.blit(p1.img, p1.position())
 
-    
-    
 
     ### Update !!! ###
     clock.tick(60)

@@ -61,7 +61,7 @@ def create_enemies(num_enemies):
         enemyX.append(random.randint(0, 736))
         enemyY.append(random.randint(50, 250))
         enemyX_change.append(random.randint(29, 42) / 10)
-        enemyY_change.append(speed_multiplier * 0.08)
+        enemyY_change.append(speed_multiplier * 0.008)
 
 create_enemies(num_enemies)
 

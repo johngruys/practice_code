@@ -21,7 +21,8 @@ class Dolphin():
         self.left = False
         self.up = False
         self.down = False
-        self.jumping = False
+        self.jump_up = False
+        self.jump_down = False
      
     # IDEK tbh #
     def __repr__(self):
@@ -60,24 +61,47 @@ class Dolphin():
         
     # Read the name of the function #
     def update_position(self):
+        if not self.jump_up and not self.jump_down:
+            if self.right and not self.left:
+                self.x = self.x + self.x_speed
+            elif self.left and not self.right:
+                self.x = self.x - self.x_speed
+            elif self.left and self.right:
+                self.x = self.x
+            
+            if self.up and not self.down:
+                self.y = self.y - self.y_speed
+            elif self.down and not self.up:
+                self.y = self.y + self.y_speed
+            elif self.up and self.down:
+                self.y = self.y
 
-        if self.right and not self.left:
-            self.x = self.x + self.x_speed
-        elif self.left and not self.right:
-            self.x = self.x - self.x_speed
-        
-        if self.up and not self.down:
-            self.y = self.y - self.y_speed
-        elif self.down and not self.up:
-            self.y = self.y + self.y_speed
+        elif self.jump_up:
+            self.x = self.x + self.x_jump_speed
+            self.y = self.y - self.y_jump_speed
+
+        elif self.jump_down:
+            self.x = self.x + self.x_jump_speed
+            self.y = self.y + self.y_jump_speed
+
+
 
     # Again, self explanatory #
     def position(self):
         return (self.x, self.y)
 
-    def jump(self, power):
+
+    def jump(self):
+
+        # Stop current movement #
         self.right = False
         self.left = False
-        self.jumping = True
+        self.up = False
+        self.down = False
+
+        # Jump #
+        self.jump_up = True
+
+        
         
         
