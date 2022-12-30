@@ -86,24 +86,24 @@ while running:
             
         if event.type == py.KEYUP:
             
-            if not jumping: # Cancel controls while jumping #
+            # Cancel controls while jumping #
 
                 # Dolphin Movement #
-                if event.key == py.K_DOWN:
-                    p1.y_movement(-2)
-                elif event.key == py.K_UP:
-                    p1.y_movement(2)
-                elif event.key == py.K_LEFT:
-                    p1.x_movement(-2)
-                elif event.key == py.K_RIGHT:
-                    p1.x_movement(2)
+            if event.key == py.K_DOWN:
+                p1.y_movement(-2)
+            elif event.key == py.K_UP:
+                p1.y_movement(2)
+            elif event.key == py.K_LEFT:
+                p1.x_movement(-2)
+            elif event.key == py.K_RIGHT:
+                p1.x_movement(2)
 
                 # Jump #
-                if event.key == py.K_SPACE:
-                    jumping = True
-                    charging = False
-                    jump_start = time.time()
-                    p1.jump()
+            if event.key == py.K_SPACE:
+                jumping = True
+                charging = False
+                jump_start = time.time()
+                p1.jump()
 
     
         # Closing Window #
@@ -120,7 +120,12 @@ while running:
             py.draw.rect(screen, lblue, (40, 40, 140, 25), 0, 2)
 
     if jumping == True:
-        jump_duration = jump_start - time.time()
+        
+        # Maximum charge #
+        if (charge * 80) > 140:
+            charge = 140/80
+
+        jump_duration = abs(jump_start - time.time())
         if p1.jump_up:
             if jump_duration > (charge / 2):
                 p1.jump_down = True

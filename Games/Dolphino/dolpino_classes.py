@@ -14,7 +14,8 @@ class Dolphin():
         self.x_speed = 3
         self.y_speed = 2
         self.x_jump_speed = 1
-        self.y_jump_speed = 4
+        self.y_jump_up_speed = 3.5
+        self.y_jump_down_speed = 3.5
 
         # Movement Vars #
         self.right = False
@@ -78,11 +79,11 @@ class Dolphin():
 
         elif self.jump_up:
             self.x = self.x + self.x_jump_speed
-            self.y = self.y - self.y_jump_speed
+            self.y = self.y - self.y_jump_up_speed
 
         elif self.jump_down:
             self.x = self.x + self.x_jump_speed
-            self.y = self.y + self.y_jump_speed
+            self.y = self.y + self.y_jump_down_speed
 
 
 
@@ -94,10 +95,10 @@ class Dolphin():
     def jump(self):
 
         # Stop current movement #
-        self.right = False
-        self.left = False
-        self.up = False
-        self.down = False
+        # self.right = False
+        # self.left = False
+        # self.up = False
+        # self.down = False
 
         # Jump #
         self.jump_up = True
