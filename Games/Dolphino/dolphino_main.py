@@ -1,6 +1,7 @@
 import pygame as py
 import time
 from dolpino_classes import Dolphin
+import math
 
 ### Initialize ###
 py.init()
@@ -16,6 +17,12 @@ py.display.set_caption(" Dolphino")
 
 icon = py.image.load("Games/Dolphino/Assets/dolphin.png")
 py.display.set_icon(icon)
+
+### Background ###
+background = py.image.load("Games/Dolphino/Assets/skyandwater.png")
+scroll = 0
+
+tiles = math.ceil(1100/ background.get_width()) + 1
 
 ### Clock ###
 clock = py.time.Clock()
@@ -50,6 +57,18 @@ while running:
     
     # Background #
     screen.fill(blue)
+
+    i = 0
+    while (i < tiles):
+        screen.blit(background, (background.get_width() * i + scroll, 0))
+        i += 1
+
+    scroll -= 3
+    if abs(scroll) > background.get_width():
+        scroll = 0
+
+
+
 
     # Charge Background #
     py.draw.rect(screen, black, (35, 35, 150, 35), 0, 4)
