@@ -15,6 +15,7 @@ class Dolphin():
         self.x_speed = 3.5
         self.y_speed = 2.5
         self.x_jump_speed = 1
+        self.y_jump_speed = .3
         self.y_jump_vel = None
         self.y_stored_jump_vel = None
 
@@ -78,21 +79,38 @@ class Dolphin():
             elif self.up and self.down:
                 self.y = self.y
         
-        else:
+        elif self.jumping:
+
+            # Limited controls while jumping #
+            if self.right and not self.left:
+                self.x = self.x + self.x_jump_speed
+            elif self.left and not self.right:
+                self.x = self.x - self.x_jump_speed
+            elif self.left and self.right:
+                self.x = self.x
+            
+            if self.up and not self.down:
+                self.y = self.y - self.y_jump_speed
+            elif self.down and not self.up:
+                self.y = self.y + self.y_jump_speed
+            elif self.up and self.down:
+                self.y = self.y
+
+            # Jump Action #
             self.x = self.x + self.x_jump_speed
             self.y = self.y - self.y_jump_vel
 
-            self.y_jump_vel -= .1
+            self.y_jump_vel -= .15
             if self.y_jump_vel < -self.y_stored_jump_vel:
                 self.jumping = False
                 
 
     def jump(self, charge):
         
-        self.right = False
-        self.left = False
-        self.up = False
-        self.down = False
+        # self.right = False
+        # self.left = False
+        # self.up = False
+        # self.down = False
         if charge < .6:
             jump_power = 1
         elif charge < 1:
@@ -106,9 +124,8 @@ class Dolphin():
         else:
             jump_power = 1.75
 
-        self.y_jump_vel = jump_power * 4
-        self.y_stored_jump_vel = jump_power * 4
-
+        self.y_jump_vel = jump_power * 5
+        self.y_stored_jump_vel = jump_power * 4.75
 
 
 
@@ -184,6 +201,54 @@ class Obstacle():
         # Randomize Location #
         self.x = 1200
         self.y = random.randint(280, 536)
+
+
+
+class Heart():
+    def __init__(self):
+        self.img = py.image.load("Games/Dolphino/Assets/extra_life.png")
+        self.x = -200
+        self.y = 400
+        self.x_speed = -4
+        self.y_vel = 3
+        self.up = True
+        self.collected = False
+    
+    def __str__(self):
+        return "Extra Life"
+    
+    def update_position(self):
+        self.x = self.x + self.x_speed
+        if self.x < -200:
+            self.collected = True
+
+        if self.up:
+            self.y = self.y + self.y_vel
+            self.y_vel -= .08
+            if self.y_vel <= -3:
+                self.y_vel = 3
+                self.up = False
+
+        if not self.up:
+            self.y = self.y - self.y_vel
+            self.y_vel -= .08
+            if self.y_vel <= -3:
+                self.y_vel = 3
+                self.up = True
+    
+    def position(self):
+        return (self.x, self.y)
+    
+    def collect(self):
+        self.x = -200
+        self.collected = True
+
+    def reset(self):
+        self.collected = False
+        self.x = 1200
+        self.y = random.randint(250, 530)
+
+
 
 
         

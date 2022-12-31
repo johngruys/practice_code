@@ -1,9 +1,11 @@
 import pygame as py
 import time
 import math
+import random
 from dolphino_classes import Dolphin
 from dolphino_classes import Ring
 from dolphino_classes import Obstacle
+from dolphino_classes import Heart
 
 ### Initialize ###
 py.init()
@@ -36,6 +38,8 @@ white = (255, 255, 255)
 black = (0, 0, 0)
 lblue = (0, 255, 255)
 blue = (0, 0, 255)
+tan = (200, 180, 140)
+
 
 # Jumping #
 charging = False
@@ -51,11 +55,19 @@ prev_ring_captured = 0
 # Lives #
 lives = 3
 damage_cooldown = 0
+prev_heart_captured = 0
+empty_heart = py.image.load("Games/Dolphino/Assets/empty_heart.png")
+full_heart = py.image.load("Games/Dolphino/Assets/full_heart.png")
+heart_cordinate_1 = (930, 15)
+heart_cordinate_2 = (980, 15)
+heart_cordinate_3 = (1030, 15)
+
 
 
 # Objects #
 p1 = Dolphin()
 ring = Ring()
+heart = Heart()
 
 obstacles = []
 
@@ -91,13 +103,11 @@ while running:
 
     
     # Charge Background #
-    py.draw.rect(screen, black, (35, 35, 150, 35), 0, 4)
-    jump_text = "Jump Level"
-    jump_font = py.font.Font("freesansbold.ttf", 20)
+    py.draw.rect(screen, tan, (35, 35, 150, 35), 0, 4)
+    jump_text = "Jump"
+    jump_font = py.font.Font("freesansbold.ttf", 16)
     disp_jump_text = jump_font.render(jump_text, True, black)
-    screen.blit(disp_jump_text, (53, 15)) 
-
-
+    
 
 
     ### User Input ###
@@ -106,7 +116,7 @@ while running:
         if event.type == py.KEYDOWN:
 
 
-            if not jumping: # Cancel controls while jumping #
+            # if not jumping: # Cancel controls while jumping #
 
                 # Dolphin Movement #
                 if event.key == py.K_DOWN:
@@ -119,9 +129,10 @@ while running:
                     p1.x_movement(1)
                 
                 # Charge jump #
-                if event.key == py.K_SPACE:
-                    charging = True
-                    charge_start = time.time()
+                if not jumping:
+                    if event.key == py.K_SPACE:
+                        charging = True
+                        charge_start = time.time()
 
 
             
@@ -153,37 +164,47 @@ while running:
         if event.type == py.QUIT:
             running = False
 
+         
+    ### Borders ###
+    if p1.x < 0:
+        p1.x = 0
+    if p1.x > 1036:
+        p1.x = 1036
+    if p1.y > 536:
+        p1.y = 536
+    if not jumping:
+        if p1.y < 245:
+            p1.y = 245
+
 
     ### Charge Behavior ###
-
     if charging == True:
         charge = abs(charge_start - time.time())
-        print(charge)
         
         # Draw charge bar #
         if (charge * 80) < 140:
-            py.draw.rect(screen, lblue, (40, 40, (charge * 80), 25), 0, 2)
+            py.draw.rect(screen, blue, (40, 40, (charge * 80), 25), 0, 2)
         else:
             py.draw.rect(screen, lblue, (40, 40, 140, 25), 0, 2)
 
 
-    ### Jump Behavior ###
-
-    
-
+    ### Ending Jump ###
     if p1.jumping == False:
         jumping = False
-        
-
-
 
     ### Collision Detection ###
-
     distance_to_ring = math.sqrt((ring.x - p1.x) ** 2 + (ring.y - p1.y) ** 2)
 
     if distance_to_ring < 40 and (frame_start_time - prev_ring_captured) > 1:
         prev_ring_captured = time.time()
         rings_collected += 1
+
+    distance_to_heart = math.sqrt((heart.x - p1.x) ** 2 + (heart.y - p1.y) ** 2)
+    if distance_to_heart < 40 and (frame_start_time - prev_heart_captured) > 1:
+        if lives < 3:
+            prev_heart_captured = time.time()
+            lives += 1
+            heart.collect()
 
 
     ### Obstacle Behavior ###
@@ -204,24 +225,45 @@ while running:
             lives -= 1
 
 
-        
-    ### Borders ###
-    if p1.x < 0:
-        p1.x = 0
-    if p1.x > 1036:
-        p1.x = 1036
-    if p1.y > 536:
-        p1.y = 536
-    if not jumping:
-        if p1.y < 245:
-            p1.y = 245
+    ### Draw Hearts ###
+    screen.blit(empty_heart, heart_cordinate_1)
+    screen.blit(empty_heart, heart_cordinate_2)
+    screen.blit(empty_heart, heart_cordinate_3)
+
+    if lives >= 1:
+        screen.blit(full_heart, heart_cordinate_1)
+    if lives >= 2:
+        screen.blit(full_heart, heart_cordinate_2)
+    if lives >= 3:
+        screen.blit(full_heart, heart_cordinate_3)
+
+    ### Draw Score ###
+    score_text = str(rings_collected)
+    score_text_words = "Score"
+    score_font = py.font.Font("freesansbold.ttf", 35)
+    words_font = py.font.Font("freesansbold.ttf", 32)
+    score_to_disp = score_font.render(score_text, True, blue)
+    score_text_words_disp = words_font.render(score_text_words, True, blue)
+    screen.blit(score_to_disp, (550, 45))
+    # screen.blit(score_text_words_disp, (515, 10))
+   
+    # Jump Text #
+    screen.blit(disp_jump_text, (85, 45)) 
+
+    ### Extra Lifes ###
+    heart.update_position()
+    screen.blit(heart.img, heart.position())
+
 
     ### Reset Ring ###
-    if ring.x < (-180):
+    if ring.x < (-350):
         ring.reset()
 
     ### character ###
-   
+    life_rng = random.randint(0, 1100)
+    if life_rng == 44 and heart.collected == True:
+        heart.reset()
+
     p1.update_position()
     screen.blit(p1.img, p1.position())
 
