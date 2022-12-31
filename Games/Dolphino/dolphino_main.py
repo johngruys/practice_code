@@ -1,7 +1,8 @@
 import pygame as py
 import time
-from dolpino_classes import Dolphin
 import math
+from dolpino_classes import Dolphin
+from dolpino_classes import Ring
 
 ### Initialize ###
 py.init()
@@ -19,7 +20,7 @@ icon = py.image.load("Games/Dolphino/Assets/dolphin.png")
 py.display.set_icon(icon)
 
 ### Background ###
-background = py.image.load("Games/Dolphino/Assets/skyandwater.png")
+background = py.image.load("Games/Dolphino/Assets/background.png")
 scroll = 0
 
 tiles = math.ceil(1100/ background.get_width()) + 1
@@ -44,6 +45,7 @@ jump_duration = 0
 
 # Items #
 p1 = Dolphin()
+ring = Ring()
 
 
 
@@ -118,16 +120,20 @@ while running:
                 p1.x_movement(2)
 
                 # Jump #
-            if event.key == py.K_SPACE:
-                jumping = True
-                charging = False
-                jump_start = time.time()
-                p1.jump()
+            if not jumping:
+                if event.key == py.K_SPACE:
+                    jumping = True
+                    charging = False
+                    jump_start = time.time()
+                    p1.jump()
 
     
         # Closing Window #
         if event.type == py.QUIT:
             running = False
+
+
+    ### Charge Behavior ###
 
     if charging == True:
         charge = abs(charge_start - time.time())
@@ -137,6 +143,9 @@ while running:
             py.draw.rect(screen, lblue, (40, 40, (charge * 80), 25), 0, 2)
         else:
             py.draw.rect(screen, lblue, (40, 40, 140, 25), 0, 2)
+
+
+    ### Jump Behavior ###
 
     if jumping == True:
         
@@ -155,6 +164,10 @@ while running:
                 p1.jump_down = False
                 jumping = False
 
+    ### Reset Ring ###
+    if ring.x < (-100):
+        ring.reset()
+
         
         
     
@@ -162,7 +175,11 @@ while running:
     p1.update_position()
     screen.blit(p1.img, p1.position())
 
+    ### Redraw Ring ###
+    ring.update_position()
+    screen.blit(ring.picture, ring.position())
+
 
     ### Update !!! ###
-    clock.tick(60)
+    clock.tick(100)
     py.display.update()

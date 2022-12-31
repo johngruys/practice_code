@@ -1,4 +1,5 @@
 import pygame as py
+import random
 
 class Dolphin():
 
@@ -102,6 +103,27 @@ class Dolphin():
 
         # Jump #
         self.jump_up = True
+
+
+class Ring():
+    def __init__(self):
+        self.picture = py.image.load("Games/Dolphino/Assets/loop.png")
+        self.x = 1200
+        self.y = random.randint(0, 180)
+        self.x_speed = -3
+    
+    def __str__(self):
+        return "The hoop dolphino jumps through"
+
+    def update_position(self):
+        self.x = self.x + self.x_speed
+
+    def position(self):
+        return (self.x, self.y)
+
+    def reset(self):
+        self.x = 1200
+        self.y = random.randint(0, 180)
 
         
         
