@@ -103,7 +103,7 @@ while running:
 
     
     # Charge Background #
-    py.draw.rect(screen, tan, (35, 35, 150, 35), 0, 4)
+    py.draw.rect(screen, tan, (35, 20, 150, 35), 0, 4)
     jump_text = "Jump"
     jump_font = py.font.Font("freesansbold.ttf", 16)
     disp_jump_text = jump_font.render(jump_text, True, black)
@@ -183,9 +183,9 @@ while running:
         
         # Draw charge bar #
         if (charge * 80) < 140:
-            py.draw.rect(screen, blue, (40, 40, (charge * 80), 25), 0, 2)
+            py.draw.rect(screen, blue, (40, 25, (charge * 80), 25), 0, 2)
         else:
-            py.draw.rect(screen, lblue, (40, 40, 140, 25), 0, 2)
+            py.draw.rect(screen, lblue, (40, 25, 140, 25), 0, 2)
 
 
     ### Ending Jump ###
@@ -248,7 +248,7 @@ while running:
     # screen.blit(score_text_words_disp, (515, 10))
    
     # Jump Text #
-    screen.blit(disp_jump_text, (85, 45)) 
+    screen.blit(disp_jump_text, (85, 30)) 
 
     ### Extra Lifes ###
     heart.update_position()
