@@ -12,19 +12,19 @@ class Dolphin():
         self.y = 370
 
         # Speed #
-        self.x_speed = 3
-        self.y_speed = 2
+        self.x_speed = 3.5
+        self.y_speed = 2.5
         self.x_jump_speed = 1
-        self.y_jump_up_speed = 3.5
-        self.y_jump_down_speed = 3.5
+        self.y_jump_vel = None
+        self.y_stored_jump_vel = None
 
         # Movement Vars #
         self.right = False
         self.left = False
         self.up = False
         self.down = False
-        self.jump_up = False
-        self.jump_down = False
+        self.jumping = False
+        self.recieved = False
      
     # IDEK tbh #
     def __repr__(self):
@@ -63,7 +63,7 @@ class Dolphin():
         
     # Read the name of the function #
     def update_position(self):
-        if not self.jump_up and not self.jump_down:
+        if not self.jumping:
             if self.right and not self.left:
                 self.x = self.x + self.x_speed
             elif self.left and not self.right:
@@ -77,33 +77,44 @@ class Dolphin():
                 self.y = self.y + self.y_speed
             elif self.up and self.down:
                 self.y = self.y
-
-        elif self.jump_up:
+        
+        else:
             self.x = self.x + self.x_jump_speed
-            self.y = self.y - self.y_jump_up_speed
+            self.y = self.y - self.y_jump_vel
 
-        elif self.jump_down:
-            self.x = self.x + self.x_jump_speed
-            self.y = self.y + self.y_jump_down_speed
+            self.y_jump_vel -= .1
+            if self.y_jump_vel < -self.y_stored_jump_vel:
+                self.jumping = False
+                
+
+    def jump(self, charge):
+        
+        self.right = False
+        self.left = False
+        self.up = False
+        self.down = False
+        if charge < .6:
+            jump_power = 1
+        elif charge < 1:
+            jump_power = 1.3
+        elif charge < 1.3:
+            jump_power = 1.5
+        elif charge <1.5:
+            jump_power = 1.6
+        elif charge < 1.7:
+            jump_power = 1.7
+        else:
+            jump_power = 1.75
+
+        self.y_jump_vel = jump_power * 4
+        self.y_stored_jump_vel = jump_power * 4
+
 
 
 
     # Again, self explanatory #
     def position(self):
         return (self.x, self.y)
-
-
-    def jump(self):
-
-        # Stop current movement #
-        # self.right = False
-        # self.left = False
-        # self.up = False
-        # self.down = False
-
-        # Jump #
-        self.jump_up = True
-
 
 
 ### Ring Class ###
@@ -113,7 +124,7 @@ class Ring():
         self.img = py.image.load("Games/Dolphino/Assets/loop.png")
         self.x = 1200
         self.y = random.randint(0, 180)
-        self.x_speed = -3
+        self.x_speed = -6
     
     def __str__(self):
         return "The hoop dolphino jumps through"
@@ -126,7 +137,7 @@ class Ring():
 
     def reset(self):
         self.x = 1200
-        self.y = random.randint(0, 180)
+        self.y = random.randint(0, 150)
 
 
 
@@ -135,10 +146,12 @@ class Ring():
 class Obstacle():
 
     def __init__(self):
-        self.img = py.image.load("Games/Dolphino/Assets/rock.png")
-        self.x = 1200
-        self.y = random.randint(300, 600)
-        self.x_speed = -3
+        self.img = None
+        self.y = None
+        self.x = None
+        self.x_speed = None
+
+        self.reset_object()
 
     def __str__(self):
         return "Imma kill dolphino"
@@ -151,10 +164,26 @@ class Obstacle():
     
     def reset_object(self):
         # Randomize Picture #
+        _random = random.randint(0,4)
+        if _random == 0:
+            self.img = py.image.load("Games/Dolphino/Assets/rock.png")
+            self.x_speed = -3
+        if _random == 1:
+            self.img = py.image.load("Games/Dolphino/Assets/antique.png")
+            self.x_speed = -3
+        if _random == 2:
+            self.img = py.image.load("Games/Dolphino/Assets/fish_hook.png")
+            self.x_speed = -4.5
+        if _random == 3:
+            self.img = py.image.load("Games/Dolphino/Assets/stone2.png")
+            self.x_speed = -3
+        if _random == 4:
+            self.img = py.image.load("Games/Dolphino/Assets/trash.png")
+            self.x_speed = -3
 
         # Randomize Location #
         self.x = 1200
-        self.y = random.randint(300, 600)
+        self.y = random.randint(280, 536)
 
 
         

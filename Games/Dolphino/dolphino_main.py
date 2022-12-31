@@ -37,17 +37,23 @@ black = (0, 0, 0)
 lblue = (0, 255, 255)
 blue = (0, 0, 255)
 
-# MISC #
+# Jumping #
 charging = False
 jumping = False
 charge = None
 jump_start = 0
 jump_duration = 0
 
+# Rings #
 rings_collected = 0
-ring_cool_down = 0
+prev_ring_captured = 0
 
-# Items #
+# Lives #
+lives = 3
+damage_cooldown = 0
+
+
+# Objects #
 p1 = Dolphin()
 ring = Ring()
 
@@ -63,17 +69,15 @@ def create_obstacles():
 # Create First Obstacle #
 create_obstacles()
 
-
+# Global Timer #
+game_start_time = time.time()
 
 ### Game Loop ###
 
 while running:
     
-    # Background #
-    screen.fill(blue)
-
-    # Global Timer #
-    game_start_time = time.time()
+    # Frame Timer #
+    frame_start_time = time.time()
 
     # Screen Scrolling (??? idk) #
     i = 0
@@ -91,7 +95,9 @@ while running:
     jump_text = "Jump Level"
     jump_font = py.font.Font("freesansbold.ttf", 20)
     disp_jump_text = jump_font.render(jump_text, True, black)
-    screen.blit(disp_jump_text, (53, 15))   
+    screen.blit(disp_jump_text, (53, 15)) 
+
+
 
 
     ### User Input ###
@@ -135,9 +141,12 @@ while running:
             if not jumping:
                 if event.key == py.K_SPACE:
                     jumping = True
+                    p1.jumping = True
                     charging = False
-                    jump_start = time.time()
-                    p1.jump()
+                    # jump_start = time.time()
+                    if (charge * 80) > 140:
+                        charge = 140/80
+                    p1.jump(charge)
 
     
         # Closing Window #
@@ -149,6 +158,7 @@ while running:
 
     if charging == True:
         charge = abs(charge_start - time.time())
+        print(charge)
         
         # Draw charge bar #
         if (charge * 80) < 140:
@@ -159,30 +169,20 @@ while running:
 
     ### Jump Behavior ###
 
-    if jumping == True:
+    
+
+    if p1.jumping == False:
+        jumping = False
         
-        # Maximum charge #
-        if (charge * 80) > 140:
-            charge = 140/80
 
-        jump_duration = abs(jump_start - time.time())
-        if p1.jump_up:
-            if jump_duration > (charge / 2):
-                p1.jump_down = True
-                p1.jump_up = False
-
-        elif p1.jump_down:
-            if jump_duration > charge:
-                p1.jump_down = False
-                jumping = False
 
 
     ### Collision Detection ###
 
     distance_to_ring = math.sqrt((ring.x - p1.x) ** 2 + (ring.y - p1.y) ** 2)
 
-    if distance_to_ring < 40 and (game_start_time - ring_cool_down) > 1:
-        ring_cool_down = time.time()
+    if distance_to_ring < 40 and (frame_start_time - prev_ring_captured) > 1:
+        prev_ring_captured = time.time()
         rings_collected += 1
 
 
@@ -193,18 +193,35 @@ while running:
         item.update_position()
         screen.blit(item.img, item.position())
 
+        # Reset when off screen #
         if item.x < -200:
             item.reset_object()
 
+        # Collision Detection #
+        distance_to_obstacle = math.sqrt((item.x - p1.x) ** 2 + (item.y - p1.y) ** 2)
+        if distance_to_obstacle < 45 and (frame_start_time - damage_cooldown) > 1.4:
+            damage_cooldown = time.time()
+            lives -= 1
 
 
-   
+        
+    ### Borders ###
+    if p1.x < 0:
+        p1.x = 0
+    if p1.x > 1036:
+        p1.x = 1036
+    if p1.y > 536:
+        p1.y = 536
+    if not jumping:
+        if p1.y < 245:
+            p1.y = 245
 
     ### Reset Ring ###
     if ring.x < (-180):
         ring.reset()
 
     ### character ###
+   
     p1.update_position()
     screen.blit(p1.img, p1.position())
 
@@ -213,5 +230,5 @@ while running:
     screen.blit(ring.img, ring.position())
 
     ### Update !!! ###
-    clock.tick(100)
+    clock.tick(70)
     py.display.update()
