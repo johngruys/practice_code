@@ -7,9 +7,9 @@ class Dolphin():
     def __init__(self):
         self.img = py.image.load("Games/Dolphino/Assets/character.png")
 
-        # Location #
-        self.x = 200
-        self.y = 200
+        # Spawn Location #
+        self.x = 180
+        self.y = 370
 
         # Speed #
         self.x_speed = 3
@@ -105,9 +105,12 @@ class Dolphin():
         self.jump_up = True
 
 
+
+### Ring Class ###
+
 class Ring():
     def __init__(self):
-        self.picture = py.image.load("Games/Dolphino/Assets/loop.png")
+        self.img = py.image.load("Games/Dolphino/Assets/loop.png")
         self.x = 1200
         self.y = random.randint(0, 180)
         self.x_speed = -3
@@ -124,6 +127,35 @@ class Ring():
     def reset(self):
         self.x = 1200
         self.y = random.randint(0, 180)
+
+
+
+### Obstacle Class ###
+
+class Obstacle():
+
+    def __init__(self):
+        self.img = py.image.load("Games/Dolphino/Assets/rock.png")
+        self.x = 1200
+        self.y = random.randint(300, 600)
+        self.x_speed = -3
+
+    def __str__(self):
+        return "Imma kill dolphino"
+    
+    def update_position(self):
+        self.x = self.x + self.x_speed
+
+    def position(self):
+        return (self.x, self.y)
+    
+    def reset_object(self):
+        # Randomize Picture #
+
+        # Randomize Location #
+        self.x = 1200
+        self.y = random.randint(300, 600)
+
 
         
         

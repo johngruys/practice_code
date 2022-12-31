@@ -1,8 +1,9 @@
 import pygame as py
 import time
 import math
-from dolpino_classes import Dolphin
-from dolpino_classes import Ring
+from dolphino_classes import Dolphin
+from dolphino_classes import Ring
+from dolphino_classes import Obstacle
 
 ### Initialize ###
 py.init()
@@ -43,13 +44,24 @@ charge = None
 jump_start = 0
 jump_duration = 0
 
+rings_collected = 0
+ring_cool_down = 0
+
 # Items #
 p1 = Dolphin()
 ring = Ring()
 
+obstacles = []
+
 
 
 ### Functions ###
+
+def create_obstacles():
+        obstacles.append(Obstacle())
+
+# Create First Obstacle #
+create_obstacles()
 
 
 
@@ -60,6 +72,10 @@ while running:
     # Background #
     screen.fill(blue)
 
+    # Global Timer #
+    game_start_time = time.time()
+
+    # Screen Scrolling (??? idk) #
     i = 0
     while (i < tiles):
         screen.blit(background, (background.get_width() * i + scroll, 0))
@@ -69,9 +85,7 @@ while running:
     if abs(scroll) > background.get_width():
         scroll = 0
 
-
-
-
+    
     # Charge Background #
     py.draw.rect(screen, black, (35, 35, 150, 35), 0, 4)
     jump_text = "Jump Level"
@@ -98,7 +112,7 @@ while running:
                 elif event.key == py.K_RIGHT:
                     p1.x_movement(1)
                 
-                # Jump #
+                # Charge jump #
                 if event.key == py.K_SPACE:
                     charging = True
                     charge_start = time.time()
@@ -107,9 +121,7 @@ while running:
             
         if event.type == py.KEYUP:
             
-            # Cancel controls while jumping #
-
-                # Dolphin Movement #
+            # Dolphin Movement #
             if event.key == py.K_DOWN:
                 p1.y_movement(-2)
             elif event.key == py.K_UP:
@@ -119,7 +131,7 @@ while running:
             elif event.key == py.K_RIGHT:
                 p1.x_movement(2)
 
-                # Jump #
+            # Space released #
             if not jumping:
                 if event.key == py.K_SPACE:
                     jumping = True
@@ -164,21 +176,41 @@ while running:
                 p1.jump_down = False
                 jumping = False
 
+
+    ### Collision Detection ###
+
+    distance_to_ring = math.sqrt((ring.x - p1.x) ** 2 + (ring.y - p1.y) ** 2)
+
+    if distance_to_ring < 40 and (game_start_time - ring_cool_down) > 1:
+        ring_cool_down = time.time()
+        rings_collected += 1
+
+
+    ### Obstacle Behavior ###
+    for item in obstacles:
+        
+        # Update and draw obstacles #
+        item.update_position()
+        screen.blit(item.img, item.position())
+
+        if item.x < -200:
+            item.reset_object()
+
+
+
+   
+
     ### Reset Ring ###
-    if ring.x < (-100):
+    if ring.x < (-180):
         ring.reset()
 
-        
-        
-    
-    ### Redraw character ###
+    ### character ###
     p1.update_position()
     screen.blit(p1.img, p1.position())
 
-    ### Redraw Ring ###
+    ### Ring ###
     ring.update_position()
-    screen.blit(ring.picture, ring.position())
-
+    screen.blit(ring.img, ring.position())
 
     ### Update !!! ###
     clock.tick(100)
