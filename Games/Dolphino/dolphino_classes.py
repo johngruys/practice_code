@@ -1,5 +1,6 @@
 import pygame as py
 import random
+from pygame import mixer
 
 class Dolphin():
 
@@ -26,6 +27,13 @@ class Dolphin():
         self.down = False
         self.jumping = False
         self.recieved = False
+        self.stop = False
+
+        # Sounds #
+        self.hurt_sound = mixer.Sound("Games/Dolphino/Assets/hurt_sound.wav")
+        self.ring_sound = mixer.Sound("Games/Dolphino/Assets/collect_ring.wav")
+        self.splash_sound = mixer.Sound("Games/Dolphino/Assets/splash2.wav")
+        self.cudi_sound = mixer.Sound("Games/Dolphino/Assets/cudi_mad.wav")
      
     # IDEK tbh #
     def __repr__(self):
@@ -64,7 +72,7 @@ class Dolphin():
         
     # Read the name of the function #
     def update_position(self):
-        if not self.jumping:
+        if not self.jumping and not self.stop:
             if self.right and not self.left:
                 self.x = self.x + self.x_speed
             elif self.left and not self.right:
@@ -79,7 +87,7 @@ class Dolphin():
             elif self.up and self.down:
                 self.y = self.y
         
-        elif self.jumping:
+        elif self.jumping and not self.stop:
 
             # Limited controls while jumping #
             if self.right and not self.left:
@@ -133,6 +141,20 @@ class Dolphin():
     def position(self):
         return (self.x, self.y)
 
+    def game_over(self):
+        self.stop = True
+
+    def sounds(self, sound):
+        if sound == "hurt":
+            self.hurt_sound.play()
+        if sound == "ring":
+            self.ring_sound.play()
+        if sound == "splash":
+            self.splash_sound.play()
+        if sound == "cudi":
+            self.cudi_sound.play()
+        
+
 
 ### Ring Class ###
 
@@ -141,7 +163,7 @@ class Ring():
         self.img = py.image.load("Games/Dolphino/Assets/loop.png")
         self.x = 1200
         self.y = random.randint(0, 180)
-        self.x_speed = -6
+        self.x_speed = -5
     
     def __str__(self):
         return "The hoop dolphino jumps through"
