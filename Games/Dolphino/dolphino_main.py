@@ -59,7 +59,7 @@ rings_collected = 0
 prev_ring_captured = 0
 
 # Lives #
-lives = 1
+lives = 3
 damage_cooldown = 0
 prev_heart_captured = 0
 game_ended = False
@@ -78,6 +78,7 @@ ring = Ring()
 heart = Heart()
 
 obstacles = []
+created_obstacles = {0: True}
 create_obstacle_cooldown = 0
 
 
@@ -292,9 +293,13 @@ while running:
     screen.blit(score_text_words_disp, (940, 70))
     
     ### Add obstacles ###
-    if rings_collected % 4 == 0 and (frame_start_time - create_obstacle_cooldown) > 20 and rings_collected != 0:
-        create_obstacle_cooldown = time.time()
+    # if rings_collected % 4 == 0 and (frame_start_time - create_obstacle_cooldown) > 20 and rings_collected != 0:
+    #     create_obstacle_cooldown = time.time()
+    #     create_obstacles()
+
+    if rings_collected % 4 == 0 and rings_collected not in created_obstacles:
         create_obstacles()
+        created_obstacles[rings_collected] = True
     
     print(rings_collected % 10)
 

@@ -221,7 +221,7 @@ class Obstacle():
             self.x_speed = -3
 
         # Randomize Location #
-        self.x = 1200
+        self.x = random.randint(1200, 1400)
         self.y = random.randint(280, 536)
 
 
@@ -268,7 +268,7 @@ class Heart():
     def reset(self):
         self.collected = False
         self.x = 1200
-        self.y = random.randint(250, 530)
+        self.y = random.randint(250, 500)
 
 
 
