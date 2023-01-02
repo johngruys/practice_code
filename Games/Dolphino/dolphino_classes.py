@@ -153,6 +153,8 @@ class Dolphin():
             self.splash_sound.play()
         if sound == "cudi":
             self.cudi_sound.play()
+        if sound == "life":
+            self.ring_sound.play()
         
 
 

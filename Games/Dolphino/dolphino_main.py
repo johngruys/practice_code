@@ -235,7 +235,7 @@ while running:
         jumping = False
 
     ### Collision Detection ###
-    distance_to_ring = math.sqrt((ring.x - p1.x) ** 2 + (ring.y - p1.y) ** 2)
+    distance_to_ring = math.sqrt(((ring.x -10) - p1.x) ** 2 + ((ring.y + 18) - p1.y) ** 2)
 
     if distance_to_ring < 40 and (frame_start_time - prev_ring_captured) > 1:
         prev_ring_captured = time.time()
@@ -243,11 +243,12 @@ while running:
         p1.sounds("ring")
 
     distance_to_heart = math.sqrt((heart.x - p1.x) ** 2 + (heart.y - p1.y) ** 2)
-    if distance_to_heart < 40 and (frame_start_time - prev_heart_captured) > 1:
+    if distance_to_heart < 50 and (frame_start_time - prev_heart_captured) > 1:
         if lives < 3:
             prev_heart_captured = time.time()
             lives += 1
             heart.collect()
+            p1.sounds("life")
 
 
     ### Obstacle Behavior ###
@@ -263,7 +264,7 @@ while running:
                 item.reset_object()
 
             # Collision Detection #
-            distance_to_obstacle = math.sqrt((item.x - p1.x) ** 2 + (item.y - p1.y) ** 2)
+            distance_to_obstacle = math.sqrt(((item.x - 20) - p1.x) ** 2 + ((item.y - 15) - p1.y) ** 2)
             if distance_to_obstacle < 45 and (frame_start_time - damage_cooldown) > 1.4:
                 damage_cooldown = time.time()
                 lives -= 1
@@ -301,8 +302,6 @@ while running:
         create_obstacles()
         created_obstacles[rings_collected] = True
     
-    print(rings_collected % 10)
-
     ### Reset Ring ###
     if ring.x < (-350):
         ring.reset()
