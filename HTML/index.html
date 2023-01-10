@@ -2,7 +2,8 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <meta name="viewpoer" content="width=device-width, inital-scale=1">
+        <meta name="viewport" content="width=device-width, inital-scale=1">
+        <link rel="stylesheet" href="styles.css"/>
         <title>My First Website</title>
     </head>
 
@@ -15,12 +16,12 @@
 
         <hr>
 
-        <! hr makes line >
+        <!-- hr makes line (this is how u do comments for some reason)--> 
 
-        Hello World! <b>(HTML Edition)</b>
+        <h3>Hello World! <b>(HTML Edition)</b></h3>
 
         <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. <a href="https://www.google.com" target="blank">Ut enim ad minim veniam, </a> quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laboru 
+            Lorem ipsum dolor sit amet, <span class="special">span element</span> consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. <a href="https://www.google.com" target="blank">Ut enim ad minim veniam, </a> quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, <abbr title="Someone u now talking">sunt</abbr> in culpa qui officia deserunt mollit anim id est laboru 
             
                            m 
 
@@ -28,7 +29,28 @@
 
         <br>
 
-        <img src="character.png" border="5"> 
+        <img src="character.png" border="5" alt="dolphin" usemap="#dolphmap" width="128" height="128"> <br>
+
+        <map name="dolphmap">
+            <area shape="rect" coords="0,0,128,64" alt="dolphin" href="https://www.google.com" target="blank">
+            <area shape="rect" coords="0,64,128,128" alt="notdolphin" href="https://www.bing.com" target="blank">
+
+        </map>
+
+        <img src="https://via.placeholder.com/150x150" alt="placeholder" usemap="#placeholder" width="150" height="150">
+
+        <map name="placeholder">
+            <area shape="circle" coords="75,75,75" alt="circle1" href="https://www.google.com" target="blank">
+
+
+        </map>
+
+        <ul>
+            <li class="special_list">Item One</li>
+            <li>Item Two</li>
+            <li>Item <em>Three</em></li>
+
+        </ul>
 
         <p>
             <b>Sed do eiusmod tempor incididunt </b> ut <i>labore et dolore magna aliqua. </i> Ut enim ad minim veniam, quis nostrud <u>exercitation ullamco laboris nisi 
