@@ -188,7 +188,6 @@ while running:
                     jumping = True
                     p1.jumping = True
                     charging = False
-                    # jump_start = time.time()
                     if (charge * 80) > 140:
                         charge = 140/80
                     p1.jump(charge)
@@ -324,5 +323,5 @@ while running:
         screen.blit(heart.img, heart.position())
 
     ### Update !!! ###
-    clock.tick(70)
+    clock.tick(100)
     py.display.update()
