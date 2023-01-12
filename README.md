@@ -1,2 +1,2 @@
-# Practice-Code
-Just for practice
+# Practice
+
