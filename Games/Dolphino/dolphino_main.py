@@ -323,5 +323,5 @@ while running:
         screen.blit(heart.img, heart.position())
 
     ### Update !!! ###
-    clock.tick(90)
+    clock.tick(60)
     py.display.update()
