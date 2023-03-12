@@ -8,7 +8,7 @@ import random
 py.init()
 
 ## Create screen
-screen = py.display.set_mode((1000, 1000))
+screen = py.display.set_mode((1000, 500))
 
 
 # Boolean for game loop
