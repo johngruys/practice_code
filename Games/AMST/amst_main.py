@@ -1,9 +1,8 @@
 import pygame as py
-from pygame import time
-from amst_classes import Character
-# import time
 import math
-# import random
+from amst_classes import Character
+from amst_classes import Scroll
+
 
 
 
@@ -32,8 +31,15 @@ background = py.image.load("Games/AMST/Assets/background1.jpg")
 scroll = 0
 tiles = math.ceil(1000/ background.get_width()) + 1
 
+## Vars
+scrolling = True
+
 ## Create objects
 character = Character()
+scrollRate = Scroll()
+
+
+
 
 
 # Boolean for game loop
@@ -41,17 +47,26 @@ running = True
 
 while running:
 
+    # Screen Scrolling 
+    if scrolling:
+        
+        i = 0
+        while (i < tiles):
+            screen.blit(background, (background.get_width() * i + scroll, 0))
+            i += 1
 
-     # Screen Scrolling (??? idk) #
-    i = 0
-    while (i < tiles):
-        screen.blit(background, (background.get_width() * i + scroll, 0))
-        i += 1
+        rate = scrollRate.scroll()
+        print(rate)
+        if rate > 0:
+            scroll -= rate
+        else:
+            scrollRate.reset()
+            scrolling = False
+        
+        if abs(scroll) > background.get_width():
+            scroll = 0
 
-    scroll -= 3
-    
-    if abs(scroll) > background.get_width():
-        scroll = 0
+        
 
 
     ## UI
@@ -59,6 +74,11 @@ while running:
 
         ## Key Presses
         if event.type == py.KEYDOWN:
+
+            if event.key == py.K_SPACE:
+                if not scrolling:
+                    scrolling = True
+            
             if event.key == py.K_UP:
                 pass
 
