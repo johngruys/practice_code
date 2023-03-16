@@ -2,6 +2,7 @@ import pygame as py
 import math
 from amst_classes import Character
 from amst_classes import Scroll
+from amst_classes import Npc
 
 
 
@@ -36,6 +37,7 @@ scrolling = True
 
 ## Create objects
 character = Character()
+npc = Npc()
 scrollRate = Scroll()
 
 
@@ -65,6 +67,9 @@ while running:
         
         if abs(scroll) > background.get_width():
             scroll = 0
+ 
+        screen.blit(npc.img, npc.getPos())
+        
 
         
 
