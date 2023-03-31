@@ -7,7 +7,8 @@ if not user in security.keys():
 
 else: 
     password = input("Password")
-    if password != security[user]
+    if password != security[user]:
+        print("Error")
     
     else: 
         print ("Hello ")
