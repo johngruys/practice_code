@@ -1,70 +1,34 @@
-h1,
-h2,
-h3,
-p {
-    color: blue;
-
-}
-
 h1 {
 
-    font-size: 2.5em;
-    color: rgb(6, 158, 123);
+    color: steelblue;
 }
 
-h2 {
-
-    /* color: rgb(50, 57, 36); */
-    font-size: 1.5em;
+p {
+    color: slateblue;
 
 }
 
-h3 {
 
-    font-size: 1em;
-}
 
-ul {
 
-    color: red;
-    background-color: black;
-    /* list-style-type: none; */
 
-}
-
-li {
-
-    color: pink;
-    list-style-type: upper-roman;
-
-}
-
-li em {
-
-    color:rebeccapurple;
-}
-
-.special {
-
-    color: orange;
-
-}
+/* Links */
 
 a:link {
 
-    color: darkcyan
+    color: slateblue
 
 }
 
 a:visited {
 
-    color: darkcyan;
+    color: steelblue;
 
 }
 
 a:hover {
 
-    text-decoration: dotted red underline;
+    text-decoration: dotted rgb(0, 76, 139) underline;
 
 }
 
