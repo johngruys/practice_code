@@ -9,12 +9,22 @@ p {
 }
 
 
+.menuButton {
 
+    color: red;
+    margin-right: 15px;
+    font-size: large;
+    /* width: 200%;
+    text-align: center;
+    align-items: center;
+    justify-content: center; */
+
+}
 
 
 /* Links */
 
-a:link {
+/* a:link {
 
     color: slateblue
 
@@ -24,7 +34,7 @@ a:visited {
 
     color: steelblue;
 
-}
+} */
 
 a:hover {
 
