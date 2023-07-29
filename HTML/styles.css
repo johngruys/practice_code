@@ -1,6 +1,7 @@
 h1 {
 
     color: steelblue;
+    text-align: center;
 }
 
 p {
@@ -8,16 +9,22 @@ p {
 
 }
 
+.menu {
+    position: fixed;
+    top: 0;
+    background-color: aquamarine;
+    width: 100%;
+    left: 0;
+}
 
-.menuButton {
+.menu a{
 
+    display: inline;
     color: red;
-    margin-right: 15px;
-    font-size: large;
-    /* width: 200%;
+    /* float: left; */
+    /* font-size: large; */
     text-align: center;
-    align-items: center;
-    justify-content: center; */
+    padding: 14px 16px;
 
 }
 
