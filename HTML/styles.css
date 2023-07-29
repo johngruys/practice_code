@@ -1,55 +1,40 @@
-h1 {
-
-    color: steelblue;
-    text-align: center;
-}
-
-p {
-    color: slateblue;
-
-}
 
 .menu {
+    overflow: hidden;
     position: fixed;
     top: 0;
-    background-color: aquamarine;
+    background-color: lightslategray;
     width: 100%;
     left: 0;
 }
 
-.menu a{
+.menu a {
 
-    display: inline;
-    color: red;
-    /* float: left; */
-    /* font-size: large; */
+    display: block;
+    color: black;
+    float: left;
+    font-size: large;
     text-align: center;
     padding: 14px 16px;
+    text-decoration-line: none;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font: georgia;
 
 }
 
-
-/* Links */
-
-/* a:link {
-
-    color: slateblue
-
+.menu a:hover {
+    background-color: rgb(123, 148, 173);
+    text-decoration: none;
 }
 
-a:visited {
+h1 {
 
     color: steelblue;
-
-} */
-
-a:hover {
-
-    text-decoration: dotted rgb(0, 76, 139) underline;
-
+    text-align: center;
+    margin-top: 65px;
 }
 
-
-
-
+p {
+    color: slateblue;
+}
 
