@@ -1,48 +1,57 @@
+
+.menu {
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    background-color: rgb(123, 148, 173);
+    width: 100%;
+    left: 0;
+}
+
+.menu a {
+
+    display: block;
+    color: black;
+    float: left;
+    font-size: large;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration-line: none;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font: georgia;
+
+}
+
+.menu a:hover {
+    background-color: rgb(138, 182, 212);
+}
+
+.currentPage {
+    text-decoration-line: underline !important;
+    text-decoration-color: black;
+    color: red;
+    text-decoration-style: solid;
+    text-decoration-thickness: 2px;
+    background-color:  rgb(138, 182, 212);
+
+}
+
 h1 {
 
     color: steelblue;
+    text-align: center;
+    margin-top: 65px;
 }
+
+.gradPic {
+    width: 200px;
+    float: right;
+    padding: 50px 50px;
+    border-radius: 55px;
+}
+
 
 p {
     color: slateblue;
-
 }
-
-
-.menuButton {
-
-    color: red;
-    margin-right: 15px;
-    font-size: large;
-    /* width: 200%;
-    text-align: center;
-    align-items: center;
-    justify-content: center; */
-
-}
-
-
-/* Links */
-
-/* a:link {
-
-    color: slateblue
-
-}
-
-a:visited {
-
-    color: steelblue;
-
-} */
-
-a:hover {
-
-    text-decoration: dotted rgb(0, 76, 139) underline;
-
-}
-
-
-
-
 
