@@ -1,3 +1,6 @@
+body {
+    padding: 0;
+}
 
 .menu {
     overflow: hidden;
@@ -36,22 +39,38 @@
 
 }
 
-h1 {
+.header {
 
-    color: steelblue;
-    text-align: center;
-    margin-top: 65px;
+    background-color: aqua;
+    position: static;
+    margin-top: 47px;
+    width: 100%;
+    height: 200px;
+    padding: 0;
+    margin: 0;
+    left: 0;
+
 }
 
+h1 {
+
+    color: rgb(138, 182, 212);
+    text-align: center;
+    /* margin-top: 65px; */
+}
+
+hr{
+
+    border: 5px solid rgb(138, 182, 212);
+    border-radius: 5px;
+
+}
 .gradPic {
     width: 200px;
     float: right;
     padding: 50px 50px;
-    border-radius: 55px;
+    border-radius: 200px;
 }
 
 
-p {
-    color: slateblue;
-}
 
