@@ -38,13 +38,10 @@ body {
 }
 
 .header {
-
-    background-color: aqua;
     position: static;
-    margin-top: 47px;
     width: 100%;
     height: 200px;
-    padding: 0;
+    padding-bottom: 3%;
     margin: 0;
     left: 0;
 
@@ -52,21 +49,28 @@ body {
 
 h1 {
 
-    color: rgb(138, 182, 212);
+    color: rgb(20, 33, 43);
     text-align: center;
-    /* padding-top: 5%; */
+    padding-top: 4%;
 }
 
 hr{
 
-    border: 5px solid rgb(138, 182, 212);
+    border: 5px solid rgb(20, 33, 43);
     border-radius: 5px;
 
 }
+
+h2 {
+
+    color: slateblue;
+
+}
+
 .gradPic {
     width: 15%;
     float: right;
-    padding: 50px 50px;
+    /* padding: 50px 50px; */
     border-radius: 200px;
 }
 
