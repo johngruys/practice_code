@@ -88,14 +88,17 @@ class Guesser():
             # Update possible answers
             self.possible_answers = updated_possible_answers
             # Return random word from possible answers
-            return random.choice(self.possible_answers)
+            if (len(self.possible_answers) > 0):
+                return random.choice(self.possible_answers)
+            else:
+                return None
         
         
     def record_guess_results(self, results):
         for i in range(len(results)):
             
             result = results[i]
-            print(f"Result: {result}")
+            # print(f"Result: {result}")
             letter = self.previous_guess[i]
             # Add record to lists
             if (result == "N"):
@@ -117,8 +120,8 @@ class Guesser():
             if letter in self.wrong_letters:
                 self.wrong_letters.remove(letter)
                         
-        print(f"Wrong letters: {self.wrong_letters}")
-        print(f"Right letter wrong place: {self.right_letter_wrong_pos}")
-        print(f"Right letters right place: {self.right_letters}")
+        # print(f"Wrong letters: {self.wrong_letters}")
+        # print(f"Right letter wrong place: {self.right_letter_wrong_pos}")
+        # print(f"Right letters right place: {self.right_letters}")
 
         

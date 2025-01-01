@@ -13,11 +13,11 @@ class Grid():
         self.YELLOW = (181, 159, 59)
         
         # Grid creation parameters
-        square_width = 85
+        square_width = 100
         square_dimensions = (square_width, square_width)
         square_gap = 13
-        horizontal_padding = 157
-        vertical_padding = 280
+        horizontal_padding = 124
+        vertical_padding = 260
         
         # Create a list of the squares for the grid
         self.squares = []

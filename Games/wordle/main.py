@@ -27,7 +27,7 @@ icon = py.image.load("Games/wordle/assets/wordle_logo.png")
 py.display.set_icon(icon)
 
 # Colors
-WHITE = (255, 255, 255)
+WHITE = (254, 255, 236)
 BLACK = (0, 0, 0)
 GRAY = (58, 58, 60)
 GREEN = (83, 141, 78)
@@ -67,8 +67,8 @@ calibrate_rect = py.Rect(200, 200, 400, 150)
 calibrate_text = "Calibrate"
 load_calibration_rect = py.Rect(200, 400, 400, 150)
 load_calibration_text = "Load Previous"
-running_rect = py.Rect(200, 400, 400, 150)
-running_text = "Solving Wordles"
+running_rect = py.Rect(200, 60, 400, 150)
+running_text = "Running Solver"
 
 
 # Main game vars/objects
@@ -76,8 +76,9 @@ turn = 1
 won = False
 board = None
 inital_wait = 2
-wait_between_guesses = 2
-wait_between_games = 2
+wait_between_guesses = 1.5
+wait_between_games = 2.3
+wait_after_reset = 0.9
 
 # Functions
 def draw_button(screen, rect, color, text):
@@ -100,8 +101,8 @@ def is_win(results):
 def restart_game():
     global turn
     global won
-    print("RESTETTING GAME!!!!!")
-    print(f"TURN: {turn}")
+    # print("RESTETTING GAME!!!!!")
+    # print(f"TURN: {turn}")
     turn = 1
     won = False
     guesser.reset()
@@ -109,7 +110,7 @@ def restart_game():
     time.sleep(wait_between_games)
     pyautogui.click(x=restart_location[0], y=restart_location[1])
     Grid.draw_grid()
-    time.sleep(inital_wait)
+    time.sleep(wait_after_reset)
     
     
 def start_listener():
@@ -259,11 +260,13 @@ while running:
     else:
         # Calibration completed at this point
         # This is Main game loop 
-        draw_button(screen, load_calibration_rect, load_calibration_color, load_calibration_text)
+        
         if (won == False):
             # board.update()
             # First Guess:
+            draw_button(screen, running_rect, load_calibration_color, running_text)
             if (turn == 1):
+                draw_button(screen, running_rect, load_calibration_color, running_text)
                 board.update()
                 # Wait for game to load
                 time.sleep(inital_wait)
@@ -294,7 +297,7 @@ while running:
                     time.sleep(wait_between_guesses)
                     board.update()
                     results = board.get_guess_results()
-                    print(f"Results of last guess: {results}")
+                    # print(f"Results of last guess: {results}")
                     
                     guesser.record_guess_results(results)
                     
@@ -311,18 +314,8 @@ while running:
                     restart_game() 
                     
                 
-                
-                
-                
-                
-                
-                
-            
-        
-            
-        
-    
-    ### User Input in main loop ###
+
+    ### User Input in outside loop ###
     for event in py.event.get():
 
         if event.type == py.KEYDOWN:

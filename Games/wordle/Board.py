@@ -56,7 +56,7 @@ class Board():
             elif (color == self.GREEN):
                 translated.append("G")
             
-        print(f"Translated results: {translated}")
+        # print(f"Translated results: {translated}")
         return translated
         
         
