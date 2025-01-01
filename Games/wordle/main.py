@@ -41,7 +41,7 @@ title_font = py.font.Font(None, 80)
 
 # Objects
 Grid = Grid(screen)
-Guesser = Guesser()
+guesser = Guesser()
 
 # Calibration variables
 calibrated = False
@@ -67,15 +67,17 @@ calibrate_rect = py.Rect(200, 200, 400, 150)
 calibrate_text = "Calibrate"
 load_calibration_rect = py.Rect(200, 400, 400, 150)
 load_calibration_text = "Load Previous"
+running_rect = py.Rect(200, 400, 400, 150)
+running_text = "Solving Wordles"
 
 
 # Main game vars/objects
 turn = 1
 won = False
 board = None
-initial_guess = "audio"
 inital_wait = 2
 wait_between_guesses = 2
+wait_between_games = 2
 
 # Functions
 def draw_button(screen, rect, color, text):
@@ -83,6 +85,31 @@ def draw_button(screen, rect, color, text):
     rendered_text = button_font.render(text, True, WHITE)
     text_rect = rendered_text.get_rect(center=rect.center)
     screen.blit(rendered_text, text_rect)
+    
+    
+# Function to check for a win
+def is_win(results):
+    all_green = True
+    for result in results:
+        if not result == "G":
+            all_green = False   
+            
+    return all_green
+
+# Function to reset after a win or loss
+def restart_game():
+    global turn
+    global won
+    print("RESTETTING GAME!!!!!")
+    print(f"TURN: {turn}")
+    turn = 1
+    won = False
+    guesser.reset()
+    board.reset()
+    time.sleep(wait_between_games)
+    pyautogui.click(x=restart_location[0], y=restart_location[1])
+    Grid.draw_grid()
+    time.sleep(inital_wait)
     
     
 def start_listener():
@@ -122,15 +149,17 @@ def load_calibration():
 # Create a board object, stored in global var
 def create_board(square_locations):
     board = Board(screen, square_locations)
+    board.update()
     
     
     
 while running:
     
-    screen.fill(WHITE)
-    
     # Initial loop when game started, needs to be calibrated
     if not calibrated:
+        
+        # Reset screen with background color
+        screen.fill(WHITE)
         
         # Selection Screen
         if not calibration_selected:
@@ -225,23 +254,62 @@ while running:
                 square_locations = locations
                 calibrated = True
                 board = Board(screen, square_locations)
+                board.update()
     
     else:
         # Calibration completed at this point
         # This is Main game loop 
+        draw_button(screen, load_calibration_rect, load_calibration_color, load_calibration_text)
         if (won == False):
-            board.update()
-            
+            # board.update()
             # First Guess:
             if (turn == 1):
+                board.update()
                 # Wait for game to load
                 time.sleep(inital_wait)
-                turn += 1
                 
                 # Make initial guess
-                Guesser.make_guess(initial_guess)
+                guesser.make_guess()
                 time.sleep(wait_between_guesses)
                 board.update()
+                
+                results = board.get_guess_results()
+                
+                # print(f"Previous guess results: {results}")
+                # Send results to guesser
+                guesser.record_guess_results(results)
+                
+                # Check for win
+                if (is_win(results)):
+                    won = True
+                    restart_game()
+                
+                # Not won, continue
+                turn += 1
+                
+            else:
+                # Not first turn, dont need initial wait
+                if (turn <= 7):
+                    guesser.make_guess()
+                    time.sleep(wait_between_guesses)
+                    board.update()
+                    results = board.get_guess_results()
+                    print(f"Results of last guess: {results}")
+                    
+                    guesser.record_guess_results(results)
+                    
+                    # Check for win
+                    if (is_win(results)):
+                        won = True
+                        restart_game()
+                        
+                    # Not won, continue
+                    turn += 1
+                    
+                else:
+                    # Used 6 turns, loss
+                    restart_game() 
+                    
                 
                 
                 

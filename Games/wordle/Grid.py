@@ -28,19 +28,6 @@ class Grid():
                 # coords.append((x_coord, y_coord))
                 square_coords = (x_coord, y_coord)
                 self.squares.append(py.Rect(square_coords, square_dimensions))
-                
-        # w1_squares = squares[0:5]
-        # w2_squares = squares[5:10]
-        # w3_squares = squares[10:15]
-        # w4_squares = squares[15:20]
-        # w5_squares = squares[20:25]
-        # w6_squares = squares[25:30]
-        # Word 1 Indexes: 0-4
-        # Word 2 Indexes: 5-9
-        # Word 3 Indexes: 10-14
-        # Word 4 Indexes: 15-19
-        # Word 5 Indexes: 20-24
-        # Word 6 Indexes: 25-29
         
         self.square_colors = []
         for i in range(30):
