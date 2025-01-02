@@ -39,7 +39,7 @@ class Guesser():
         guess = self.find_guess()
         
         # Write and store guess
-        pyautogui.write(guess, interval=0.1)
+        pyautogui.write(guess, interval=0.02)
         pyautogui.press("enter")
         self.previous_guess = guess
         

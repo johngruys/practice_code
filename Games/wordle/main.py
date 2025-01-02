@@ -139,8 +139,6 @@ def save_calibration():
     restart_location = square_locations.pop()
     create_board(square_locations)
     
-    
-
 # Load the stored calibration for use now
 def load_calibration():
     with open("Games/wordle/assets/saved_configuration.json", "r") as file:
