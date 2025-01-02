@@ -5,6 +5,7 @@ import pyautogui
 import keyboard
 from pynput.mouse import Listener
 import json
+from board import Board
 
 
 ### Initialize ###
@@ -65,7 +66,8 @@ corner_coordinates = []
 # List to store all cal vars - for ease of save
 calibration_variables = []
 
-
+# Game vars
+board = None
 
 
 
@@ -256,6 +258,8 @@ def detect_global_space_press():
             start_listener()
     
 def load_calibration():
+    global calibrated
+    global board
     # Extract params from save and load into correct vars
     tmp_calibration_variables = None
     with open("Games/snake/assets/saved_configuration.json", "r") as file:
@@ -265,14 +269,23 @@ def load_calibration():
     corner_coordinates = tmp_calibration_variables.pop()
     input_snake_speed = tmp_calibration_variables.pop()
     input_board_size = tmp_calibration_variables.pop()
+    print(f"Board Size: {input_board_size} || Snake Speed: {input_snake_speed} || Corners: {corner_coordinates}")
+    calibrated = True
+    board = Board(screen, corner_coordinates, input_board_size)
 
 def save_calibration():
     # Add calibrated parameters to list and save it
+    global calibrated
+    global board
+    
     calibration_variables.append(input_board_size)
     calibration_variables.append(input_snake_speed)
-    calibration_variables.appen(corner_coordinates)
+    calibration_variables.append(corner_coordinates)
     with open("Games/snake/assets/saved_configuration.json", "w") as file:
         json.dump(calibration_variables, file)
+        
+    calibrated = True
+    board = Board(screen, corner_coordinates, input_board_size)
 
 while running:
     
@@ -331,14 +344,15 @@ while running:
                 input_snake_speed = select_snake_speed()
                 calibrate_corners()
                 
-                print(f"Board Size: {input_board_size} || Snake Speed: {input_snake_speed}")
+                print(f"Board Size: {input_board_size} || Snake Speed: {input_snake_speed} || Corners: {corner_coordinates}")
                 
                 # Calibration complete, save and continue
                 save_calibration()
-                calibrated = True
+                
     else:
         # Calibration complete/loaded, game loop here
-        pass
+        board.update()
+        py.display.flip()
         
                 
     
