@@ -6,6 +6,7 @@ import keyboard
 from pynput.mouse import Listener
 import json
 from board import Board
+from AutoSnake import AutoSnake
 
 
 ### Initialize ###
@@ -350,9 +351,16 @@ while running:
                 save_calibration()
                 
     else:
-        # Calibration complete/loaded, game loop here
-        board.update()
-        py.display.flip()
+        # Calibration complete/loaded, start game here
+        
+        # Benchmarking functions for optimization
+        # start_time = time.time()
+        # board.update()
+        # print(f"Time to update: {time.time() - start_time:.4f} seconds")
+        
+        board.update() # Update so it has current food location
+        snake = AutoSnake(select_snake_speed, board)
+        snake.run()
         
                 
     
