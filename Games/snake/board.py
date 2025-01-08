@@ -188,7 +188,7 @@ class Board():
         # If not on right or bottom edge
         if (tile_x < (self.num_horizontal_squares - 2)):
             neighbor_indexes.append((tile_y, tile_x + 1))
-        if (tile_y < (self.num_horizontal_squares - 2)):
+        if (tile_y < (self.num_vertical_squares - 2)):
             neighbor_indexes.append((tile_y + 1, tile_x))
             
         return neighbor_indexes
@@ -197,6 +197,7 @@ class Board():
     # Since snake color varies, if it is not background color or food color, assume it is obstacle
     def is_obstacle(self, tile):
         obstacle = True
+        print(f"Tile 1: {tile[1]}, Tile 0: {tile[0]}")
         color = self.square_colors[tile[1]][tile[0]]
         if (color == self.LGREEN):
             obstacle = False

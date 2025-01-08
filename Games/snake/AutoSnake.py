@@ -62,7 +62,7 @@ class AutoSnake():
             
             # If this tile is food, return path
             if (current_y, current_x) == food_position:
-                print(path + [(current_y, current_x)])
+                # print(path + [(current_y, current_x)])
                 return path + [(current_y, current_x)]
             
             # Explore neighbors
