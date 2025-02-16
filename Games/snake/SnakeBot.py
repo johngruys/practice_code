@@ -60,18 +60,19 @@ class SnakeBot():
             
             if (path): # Non-empty path returned, execute
                 self.execute_path(path)
-            else: # No path found, survive
-                survival_path = self.survive()
-                self.execute_path(survival_path)
+            else: # No path found, survie
+                survival_path = self.find_survival_route()
+                print(f"SURVIVAL MODE! Path: {survival_path}")
+                self.execute_survival_path(survival_path)
                 
             
-    # A function to automatically execute moves that will prolong death in case of path to food not found
-    def survive(self):
+    # A function to find a route (of designated length) of moves with the sole purpose of survival; no food is reachable according to find_route()
+    def find_survival_route(self):
         # Var for number of moves to make before exiting survival mode:
-        num_moves = 3
+        num_moves = 4
         starting_position = self.body.get_head()
         
-        print(f"FINDING SURVIVAL PATH! Head at: {starting_position}")
+        # print(f"FINDING SURVIVAL ROUTE! Head at: {starting_position}")
         
         # Queue to store current snake and the path recorded so far
         queue = deque([(deepcopy(self.body), [starting_position])]) 
@@ -101,10 +102,8 @@ class SnakeBot():
                     new_snake.new_head(neighbor)
                     queue.append((new_snake, path + [neighbor]))
         
-    
-    
-    # A function to execute the moves of the path in order
-    def execute_path(self, path):
+    # A function to execute survival path, differs from normal execution because snake doesnt grow at end (no food is eaten)
+    def execute_survival_path(self, path):
         # Get starting pos, removes it from path so now 0 element is where we want to go
         current_tile = (0, 0)
         if (path):
@@ -120,14 +119,45 @@ class SnakeBot():
             # Update snake location and current tile
             self.body.new_head(next_tile)
             current_tile = next_tile
+            # Short wait to prevent clipping, excluding last move because needs to search
+            if not (len(path) == 0):
+                time.sleep(0.01)
             
         
-        print("Executed Path Successfully")
+        # print("Executed Path Successfully")
+    
+    # A function to execute the moves of the path in order, grows by one lengths once food is reached
+    def execute_path(self, path):
+        # Get starting pos, removes it from path so now 0 element is where we want to go
+        current_tile = (0, 0)
+        if (path):
+            current_tile = path.pop(0)
+        
+        while path: # Iterate through path making moves until empty
+            next_tile = path.pop(0)
+            direction = self.get_dir(current_tile, next_tile)
+            self.execute_move(direction)
+            
+            # Wait until snake moves into next square before continuing
+            self.wait_until_enters(next_tile)
+            
+            # Update snake location and current tile, unless food
+            if (not len(path) == 0):
+                self.body.new_head(next_tile)
+                current_tile = next_tile
+                # Short wait to prevent clipping
+                time.sleep(0.01)                
+            else: # last element has been popped, this is food tile
+                self.body.eat_food(next_tile)
+                # print(f"Food ate at: {next_tile}")            
+        
+        # print("Executed Path Successfully")
             
     # Function to block path execution until snake moves into desired next square
     def wait_until_enters(self, tile):
         while (not self.board.is_snake(tile)):
             self.board.update()
+        
             
     
     # Helper function to move in specified direction using pyautogui    
@@ -157,11 +187,13 @@ class SnakeBot():
         starting_position = self.body.get_head()
         
         print(f"Searching for path, food at: {food_position}, head at: {starting_position}")
+        # print(f"Current snake: {self.body.get_snake()}")
         
         # Queue to store current snake and the path recorded so far
         queue = deque([(deepcopy(self.body), [starting_position])]) 
         visited = set()
         visited.add(starting_position)
+        # print(f"Visited at start of search: {visited}")
         
         # Iterate until queue is empty
         while queue:
@@ -176,18 +208,18 @@ class SnakeBot():
             
             # Explore neighbors
             for neighbor in self.board.get_neighbors(current_position):
-                # print(neighbor)
-                
                 # Ensure neighbor is valid target (not visited, not part of the snake, and not an obstacle)
-                if (neighbor not in visited) and (neighbor not in snake.get_snake()) and (not self.board.is_obstacle(neighbor)):
+                if (neighbor not in visited) and (neighbor not in snake.get_snake()) and (not self.board.is_obstacle(neighbor)): 
                     # Add to visited
                     visited.add(neighbor)
+                    # print(neighbor)
                     # Create new snake and update w/ new head
                     new_snake = deepcopy(snake)
                     new_snake.new_head(neighbor)
                     queue.append((new_snake, path + [neighbor]))
                     
         # If no path is found, return an empty path  
+        print("No path found!")
         return []  
         
         
@@ -231,6 +263,10 @@ class SnakeBody:
         # Add new head location, remove the oldest entry (tail)
         self.body.append(coord)
         self.body.popleft()
+        
+    # Function to update snake when food is consumed, grows head by one, leaving tail
+    def eat_food(self, coord):
+        self.body.append(coord)
         
     # Returns a list of all coordinates currently occupied by snake
     def get_snake(self):

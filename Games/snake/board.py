@@ -189,9 +189,9 @@ class Board():
         if (not tile_y == 0):
             neighbor_indexes.append((tile_y - 1, tile_x))
         # If not on right or bottom edge
-        if (tile_x < (self.num_horizontal_squares - 2)):
+        if (tile_x < (self.num_horizontal_squares - 1)):
             neighbor_indexes.append((tile_y, tile_x + 1))
-        if (tile_y < (self.num_vertical_squares - 2)):
+        if (tile_y < (self.num_vertical_squares - 1)):
             neighbor_indexes.append((tile_y + 1, tile_x))
             
         return neighbor_indexes
