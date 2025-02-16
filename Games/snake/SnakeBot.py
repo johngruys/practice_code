@@ -69,7 +69,7 @@ class SnakeBot():
     # A function to find a route (of designated length) of moves with the sole purpose of survival; no food is reachable according to find_route()
     def find_survival_route(self):
         # Var for number of moves to make before exiting survival mode:
-        num_moves = 4
+        num_moves = 3
         starting_position = self.body.get_head()
         
         # print(f"FINDING SURVIVAL ROUTE! Head at: {starting_position}")
@@ -120,7 +120,7 @@ class SnakeBot():
             self.body.new_head(next_tile)
             current_tile = next_tile
             # Short wait to prevent clipping, excluding last move because needs to search
-            if not (len(path) == 0):
+            if not (len(path) == -1):
                 time.sleep(0.01)
             
         
@@ -162,7 +162,7 @@ class SnakeBot():
     
     # Helper function to move in specified direction using pyautogui    
     def execute_move(self, direction):
-        print(f"Moving " + direction)
+        # print(f"Moving " + direction)
         pyautogui.press(direction)
         
     # Helper function to get relative dir of move to next tile
@@ -204,7 +204,15 @@ class SnakeBot():
             
             # If this tile is food, return path
             if (current_position == food_position):
-                return path
+                # Ensure path execution wont trap snake
+                start_time = time.time()
+                trapped = self.snake_trapped(snake)
+                print(f"Time to check if trapped: {time.time() - start_time:.4f} seconds")
+                if not (trapped):
+                    return path
+                else: # This path would trap the snake, dont consider this path
+                    print(f"Length of queue before continuing: {len(queue)}")
+                    continue # but consider the rest in queue
             
             # Explore neighbors
             for neighbor in self.board.get_neighbors(current_position):
@@ -223,8 +231,47 @@ class SnakeBot():
         return []  
         
         
-    # Function to create a short list of additional moves, to append to found route to food so as to give time for food to spawn and new path to be found
-
+    # Function to check if a path will result in the snake getting stuck after execution
+    def snake_trapped(self, current_body):
+        
+        # Check that a path can be made that is longer than the snakes body
+        current_length = len(current_body.get_snake())
+        starting_position = current_body.get_head()
+        
+        # Queue to store current snake and the path recorded so far
+        queue = deque([(deepcopy(current_body), [])]) 
+        visited = set()
+        visited.add(starting_position)
+        
+        # Iterate until queue is empty
+        while queue:
+            # Pop next tile to visit (oldest addition to queue)
+            snake, path = queue.popleft()
+            current_position = snake.get_head()
+            
+            # If this tile is food, return path
+            if (len(path) >= current_length):
+                return False
+            
+            # Explore neighbors
+            for neighbor in self.board.get_neighbors(current_position):
+                # print(neighbor)
+                
+                # Ensure neighbor is valid target (not visited, not part of the snake, and not an obstacle)
+                if (neighbor not in visited) and (neighbor not in snake.get_snake()) and (not self.board.is_obstacle(neighbor)):
+                    # Add to visited
+                    visited.add(neighbor)
+                    # Create new snake and update w/ new head
+                    new_snake = deepcopy(snake)
+                    new_snake.new_head(neighbor)
+                    queue.append((new_snake, path + [neighbor]))
+                    
+        # Unable to find long enough path, snake is trapped
+        print("Would result in snake being trapped!")
+        return True
+        
+        
+        
 # Snake Body class, tracks the coordinates corresponding to squares that the snake is currently located in
 class SnakeBody:
     def __init__(self, board_size=None):
