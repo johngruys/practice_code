@@ -125,7 +125,7 @@ class Board():
                 pyautogui.moveTo(center[0], center[1])
                 time.sleep(0.01)
                 
-        time.sleep(10)
+        time.sleep(10) # Pause so you can exit after verifying square centers
                 
     def draw_board(self):
         # Iterate through every square and draw it
@@ -164,10 +164,13 @@ class Board():
             new_colors.append(row)
         
         self.square_colors = new_colors
+        # print(f"Number of vertical rows in NEW COLORS: {len(new_colors)}")
+        # print(f"Num columns in NEW COLORS: {len(new_colors[0])}")
         self.draw_board()
         
+    # Returns board size (y, x)
     def get_board_size(self):
-        return (self.num_horizontal_squares, self.num_vertical_squares)
+        return (self.num_vertical_squares, self.num_horizontal_squares)
     
     def get_snake_starting_pos(self):
         return self.snake_starting_position
@@ -197,8 +200,8 @@ class Board():
     # Since snake color varies, if it is not background color or food color, assume it is obstacle
     def is_obstacle(self, tile):
         obstacle = True
-        print(f"Tile 1: {tile[1]}, Tile 0: {tile[0]}")
-        color = self.square_colors[tile[1]][tile[0]]
+        # print(f"Tile 1: {tile[1]}, Tile 0: {tile[0]}")
+        color = self.square_colors[tile[0]][tile[1]]
         if (color == self.LGREEN):
             obstacle = False
         elif (color == self.GREEN):
@@ -207,6 +210,19 @@ class Board():
             obstacle = False
         
         return obstacle
+    
+
+    # A ftunction that tells if the given square is (probably) occupied by the snake
+    # Since RGB value of snake varies, checks if it is generally blue-ish
+    def is_snake(self, tile):
+        tile_color = self.square_colors[tile[0]][tile[1]]
+        r = tile_color[0]
+        g = tile_color[1]
+        b = tile_color[2]
+        if (b > r) and (b > g): # Blue is dominant color, probably is snake
+            return True
+        else: # Probably not snake
+            return False
         
         
         

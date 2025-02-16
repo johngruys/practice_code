@@ -20,16 +20,18 @@ class AutoSnake():
         if (speed == "Slow"):
             self.wait_between_moves = 0.175
         elif (speed == "Normal"):
-            self.wait_between_moves = 0.129
+            self.wait_between_moves = 0.1
         elif (speed == "Fast"):
             self.wait_between_moves = 0.86
         
+        # print(speed)
+        # print(self.wait_between_moves)
         
         # Need coordinates of head
         self.head_position = board.get_snake_starting_pos()
         
-        self.num_horizontal_squares = board.get_board_size()[0]
-        self.num_vertical_squares = board.get_board_size()[1]
+        self.num_horizontal_squares = board.get_board_size()[1]
+        self.num_vertical_squares = board.get_board_size()[0]
         
     # Main driver function that will run the whole game, only leaves loop when game ends. 
     def run(self):
@@ -41,9 +43,20 @@ class AutoSnake():
             # Each iteration of this loop constitues one path executed, so need a new path at the start of each loop
             current_postion = self.head_position
             food_position = self.board.get_food_pos()
+            
+            # start_time = time.time()
             path = self.find_path(current_postion, food_position)
+            # end_time = time.time()
+            # elapsed_time = end_time - start_time
+            # print(f"Find path function took {elapsed_time:.6f} seconds.")
+            
             self.execute_path(path)
+            
+            # start_time = time.time()
             self.board.update()
+            # end_time = time.time()
+            # elapsed_time = end_time - start_time
+            # print(f"Update function took {elapsed_time:.6f} seconds.")
             
         
 
@@ -63,11 +76,11 @@ class AutoSnake():
             # If this tile is food, return path
             if (current_y, current_x) == food_position:
                 # print(path + [(current_y, current_x)])
-                return path + [(current_y, current_x)]
+                return path
             
             # Explore neighbors
             for neighbor in self.board.get_neighbors((current_y, current_x)):
-                print(neighbor)
+                # print(neighbor)
                 # Ensure valid (Not visited and not obstacle)
                 if neighbor not in visited and not self.board.is_obstacle(neighbor):
                     visited.add(neighbor)
@@ -79,8 +92,18 @@ class AutoSnake():
     # Function to execute the path moves using pynput
     def execute_path(self, path):
         print("Starting path execution")
+        print(f"Path given: {path}")
         # Num steps needed to execute
         steps = len(path)   
+        
+        # If path is empty, end
+        if (len(path) == 0):
+            return None
+        
+        # If path is only one move, invalid
+        if (len(path) == 1):
+            return None
+        
         ending_square = path[len(path) - 1]
         
         # Immediately execute first move
@@ -100,26 +123,20 @@ class AutoSnake():
         print("Path execution ended")
             
     def execute_move(self, direction):
-        if (direction == "Up"):
-            pyautogui.press('up')
-        elif (direction == "Down"):
-            pyautogui.press('down')
-        elif (direction == "Left"):
-            pyautogui.press('left')
-        else:
-            pyautogui.press('right')
+        print(f"Moving" + direction)
+        pyautogui.press(direction)
         
     # Helper function to get relative dir of move to next tile
     def get_dir(self, current_tile, next_tile):
         
         if next_tile[0] < current_tile[0]: 
-            return "Up"
+            return "up"
         elif next_tile[0] > current_tile[0]:  
-            return "Down"
+            return "down"
         elif next_tile[1] > current_tile[1]:
-            return "Right"
+            return "right"
         elif next_tile[1] < current_tile[1]:
-            return "Left"
+            return "left"
             
         
         

@@ -7,6 +7,7 @@ from pynput.mouse import Listener
 import json
 from board import Board
 from AutoSnake import AutoSnake
+from SnakeBot import SnakeBot
 
 
 ### Initialize ###
@@ -61,7 +62,9 @@ calibration_selected = False
 space_bar_pressed = False
 
 input_board_size = None
+
 input_snake_speed = None
+
 # List to store top left and bottom right corners
 corner_coordinates = []
 # List to store all cal vars - for ease of save
@@ -137,6 +140,7 @@ def select_board_size():
         
 # Function to select board size
 def select_snake_speed():
+    global input_snake_speed
     # print("Speed select function called")
     select_speed_rect = py.Rect(300, 180, 600, 180)
     select_speed_text = "Select Snake Speed"
@@ -261,6 +265,8 @@ def detect_global_space_press():
 def load_calibration():
     global calibrated
     global board
+    global input_snake_speed
+    
     # Extract params from save and load into correct vars
     tmp_calibration_variables = None
     with open("Games/snake/assets/saved_configuration.json", "r") as file:
@@ -289,7 +295,6 @@ def save_calibration():
     board = Board(screen, corner_coordinates, input_board_size)
 
 while running:
-    
     # Fill background at start of each frame
     screen.fill(WHITE)
     
@@ -354,14 +359,16 @@ while running:
         # Calibration complete/loaded, start game here
         
         # Benchmarking functions for optimization
-        # start_time = time.time()
-        # board.update()
-        # print(f"Time to update: {time.time() - start_time:.4f} seconds")
+        start_time = time.time()
+        board.update()
+        print(f"Time to update: {time.time() - start_time:.4f} seconds")
         
-        board.update() # Update so it has current food location
-        snake = AutoSnake(select_snake_speed, board)
+        # board.update() # Update so it has current food location
+        # snake = AutoSnake(input_snake_speed, board)
+        # snake.run()
+        
+        snake = SnakeBot(input_snake_speed, board)
         snake.run()
-        
                 
     
 
