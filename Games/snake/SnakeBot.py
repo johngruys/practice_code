@@ -120,7 +120,7 @@ class SnakeBot():
             self.body.new_head(next_tile)
             current_tile = next_tile
             # Short wait to prevent clipping, excluding last move because needs to search
-            if not (len(path) == -1):
+            if not (len(path) == 0):
                 time.sleep(0.01)
             
         
@@ -196,7 +196,7 @@ class SnakeBot():
         # print(f"Visited at start of search: {visited}")
         
         # Iterate until queue is empty
-        while queue:
+        while (len(queue) > 0):
             # Pop next tile to visit (oldest addition to queue)
             snake, path = queue.popleft()
             current_position = snake.get_head()
@@ -205,9 +205,9 @@ class SnakeBot():
             # If this tile is food, return path
             if (current_position == food_position):
                 # Ensure path execution wont trap snake
-                start_time = time.time()
+                # start_time = time.time()
                 trapped = self.snake_trapped(snake)
-                print(f"Time to check if trapped: {time.time() - start_time:.4f} seconds")
+                # print(f"Time to check if trapped: {time.time() - start_time:.4f} seconds")
                 if not (trapped):
                     return path
                 else: # This path would trap the snake, dont consider this path
@@ -263,7 +263,9 @@ class SnakeBot():
                     visited.add(neighbor)
                     # Create new snake and update w/ new head
                     new_snake = deepcopy(snake)
-                    new_snake.new_head(neighbor)
+                    tail = new_snake.new_head(neighbor)
+                    if (tail in visited):
+                        visited.remove(tail)
                     queue.append((new_snake, path + [neighbor]))
                     
         # Unable to find long enough path, snake is trapped
@@ -305,11 +307,11 @@ class SnakeBody:
         else: # If not specified, dont initialize a position
             pass
     
-    # Function to update the snake according to a move made
+    # Function to update the snake according to a move made, returns the tail element that was removed
     def new_head(self, coord):
         # Add new head location, remove the oldest entry (tail)
         self.body.append(coord)
-        self.body.popleft()
+        return self.body.popleft()
         
     # Function to update snake when food is consumed, grows head by one, leaving tail
     def eat_food(self, coord):
