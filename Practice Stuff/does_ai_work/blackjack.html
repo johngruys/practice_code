@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Blackjack Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #2e7d32;
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      margin-top: 20px;
+    }
+    #game-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    #balance {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+    }
+    #controls, #action-buttons {
+      margin: 20px 0;
+    }
+    input[type="number"] {
+      padding: 5px;
+      font-size: 1em;
+      width: 100px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1em;
+      margin: 5px;
+      cursor: pointer;
+    }
+    .hand-container {
+      margin: 20px 0;
+    }
+    .hand-title {
+      font-size: 1.3em;
+      margin-bottom: 10px;
+    }
+    .cards {
+      display: flex;
+      justify-content: center;
+    }
+    .card {
+      width: 60px;
+      height: 90px;
+      border: 1px solid #fff;
+      border-radius: 8px;
+      background: #fff;
+      color: #000;
+      margin: 0 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      position: relative;
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
+    }
+    .card.hidden {
+      background: #999;
+      color: #999;
+    }
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+    #message {
+      font-size: 1.2em;
+      margin: 20px 0;
+      min-height: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <h1>Blackjack</h1>
+    <div id="balance">Balance: $1000</div>
+    <div id="controls">
+      <input type="number" id="wager-input" placeholder="Enter wager" min="1">
+      <button id="deal-button">Deal</button>
+    </div>
+
+    <div class="hand-container" id="dealer-hand-container">
+      <div class="hand-title">Dealer's Hand</div>
+      <div class="cards" id="dealer-cards"></div>
+    </div>
+    <div class="hand-container" id="player-hand-container">
+      <div class="hand-title">Player's Hand</div>
+      <div class="cards" id="player-cards"></div>
+    </div>
+
+    <div id="action-buttons" style="display: none;">
+      <button id="hit-button">Hit</button>
+      <button id="stand-button">Stand</button>
+    </div>
+
+    <div id="message"></div>
+    <div id="next-round-container" style="display: none;">
+      <button id="next-round-button">Next Round</button>
+    </div>
+  </div>
+
+  <script>
+    // Global game state variables
+    let balance = 1000;
+    let wager = 0;
+    let deck = [];
+    let playerHand = [];
+    let dealerHand = [];
+    const cardDelay = 600; // Delay in ms for animations between dealing cards
+
+    // Get references to DOM elements
+    const balanceDiv = document.getElementById("balance");
+    const wagerInput = document.getElementById("wager-input");
+    const dealButton = document.getElementById("deal-button");
+    const hitButton = document.getElementById("hit-button");
+    const standButton = document.getElementById("stand-button");
+    const messageDiv = document.getElementById("message");
+    const nextRoundContainer = document.getElementById("next-round-container");
+    const nextRoundButton = document.getElementById("next-round-button");
+    const dealerCardsDiv = document.getElementById("dealer-cards");
+    const playerCardsDiv = document.getElementById("player-cards");
+    const actionButtons = document.getElementById("action-buttons");
+
+    // Create and shuffle a new deck
+    function createDeck() {
+      const suits = ['♥', '♦', '♣', '♠'];
+      const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+      let newDeck = [];
+      for (let suit of suits) {
+        for (let rank of ranks) {
+          newDeck.push({ rank, suit });
+        }
+      }
+      // Shuffle deck using Fisher-Yates algorithm
+      for (let i = newDeck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newDeck[i], newDeck[j]] = [newDeck[j], newDeck[i]];
+      }
+      return newDeck;
+    }
+
+    // Compute the card's value (Ace starts as 11)
+    function cardValue(card) {
+      if (['J', 'Q', 'K'].includes(card.rank)) {
+        return 10;
+      } else if (card.rank === 'A') {
+        return 11;
+      } else {
+        return parseInt(card.rank);
+      }
+    }
+
+    // Calculate total hand value with Ace adjustments
+    function handValue(hand) {
+      let total = 0;
+      let aces = 0;
+      for (let card of hand) {
+        total += cardValue(card);
+        if (card.rank === 'A') {
+          aces++;
+        }
+      }
+      while (total > 21 && aces > 0) {
+        total -= 10;
+        aces--;
+      }
+      return total;
+    }
+
+    // Create a card element with an optional hidden style
+    function createCardElement(card, hidden = false) {
+      const cardDiv = document.createElement("div");
+      cardDiv.classList.add("card");
+      if (hidden) {
+        cardDiv.classList.add("hidden");
+        cardDiv.textContent = "";
+      } else {
+        cardDiv.textContent = card.rank + card.suit;
+      }
+      return cardDiv;
+    }
+
+    // Render both dealer and player hands to the UI
+    function renderHands(revealDealer = false) {
+      dealerCardsDiv.innerHTML = "";
+      playerCardsDiv.innerHTML = "";
+
+      dealerHand.forEach((card, index) => {
+        // Hide dealer's first card unless revealed
+        let hidden = (!revealDealer && index === 0);
+        const cardElem = createCardElement(card, hidden);
+        dealerCardsDiv.appendChild(cardElem);
+      });
+      playerHand.forEach(card => {
+        const cardElem = createCardElement(card);
+        playerCardsDiv.appendChild(cardElem);
+      });
+    }
+
+    // Helper to disable hit/stand buttons
+    function disableActions() {
+      hitButton.disabled = true;
+      standButton.disabled = true;
+    }
+
+    // Helper to enable hit/stand buttons
+    function enableActions() {
+      hitButton.disabled = false;
+      standButton.disabled = false;
+    }
+
+    // Delay function using promises
+    function delay(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    // Deal one card with animation delay
+    async function dealCard(targetHand) {
+      if (deck.length === 0) {
+        deck = createDeck();
+      }
+      const card = deck.pop();
+      targetHand.push(card);
+      renderHands(false);
+      await delay(cardDelay);
+    }
+
+    // Deal initial two cards to both player and dealer with delay
+    async function initialDeal() {
+      playerHand = [];
+      dealerHand = [];
+      deck = createDeck();
+      messageDiv.textContent = "";
+      await dealCard(playerHand);
+      await dealCard(dealerHand);
+      await dealCard(playerHand);
+      await dealCard(dealerHand);
+      renderHands(false);
+    }
+
+    // Start the player's turn by showing action buttons
+    function startPlayerTurn() {
+      actionButtons.style.display = "block";
+      enableActions();
+    }
+
+    // Handle the player's Hit action
+    async function playerHit() {
+      disableActions();
+      await dealCard(playerHand);
+      const total = handValue(playerHand);
+      if (total > 21) {
+        messageDiv.textContent = "You busted!";
+        endRound();
+      } else {
+        enableActions();
+      }
+    }
+
+    // Handle the player's Stand action and then execute the dealer turn
+    async function playerStand() {
+      disableActions();
+      // Reveal dealer's hidden card
+      renderHands(true);
+      await delay(cardDelay);
+      // Dealer hits until reaching a total of at least 17
+      while (handValue(dealerHand) < 17) {
+        await dealCard(dealerHand);
+        renderHands(true);
+        await delay(cardDelay);
+      }
+      determineOutcome();
+    }
+
+    // Determine the winner and update balance using 2:1 payout for wins
+    function determineOutcome() {
+      const playerTotal = handValue(playerHand);
+      const dealerTotal = handValue(dealerHand);
+      renderHands(true);
+      let outcomeMessage = "";
+
+      if (playerTotal > 21) {
+        outcomeMessage = "You busted! You lose your wager.";
+        balance -= wager;
+      } else if (dealerTotal > 21) {
+        outcomeMessage = "Dealer busted! You win!";
+        balance += wager * 2;
+      } else if (playerTotal === dealerTotal) {
+        outcomeMessage = "Push. It's a tie.";
+      } else if (playerTotal > dealerTotal) {
+        outcomeMessage = "You win!";
+        balance += wager * 2;
+      } else {
+        outcomeMessage = "Dealer wins.";
+        balance -= wager;
+      }
+      messageDiv.textContent = outcomeMessage;
+      updateBalance();
+      nextRoundContainer.style.display = "block";
+    }
+
+    // End the round and disable further actions
+    function endRound() {
+      disableActions();
+      nextRoundContainer.style.display = "block";
+    }
+
+    // Update the displayed balance
+    function updateBalance() {
+      balanceDiv.textContent = "Balance: $" + balance;
+    }
+
+    // Reset round display and state for a new round
+    function resetRound() {
+      actionButtons.style.display = "none";
+      nextRoundContainer.style.display = "none";
+      playerHand = [];
+      dealerHand = [];
+      dealerCardsDiv.innerHTML = "";
+      playerCardsDiv.innerHTML = "";
+      messageDiv.textContent = "";
+    }
+
+    // Start a new round: check wager, deal initial cards, and start player turn
+    async function newRound() {
+      resetRound();
+      wager = parseInt(wagerInput.value);
+      if (isNaN(wager) || wager <= 0) {
+        messageDiv.textContent = "Please enter a valid wager.";
+        return;
+      }
+      if (wager > balance) {
+        messageDiv.textContent = "Wager exceeds your current balance!";
+        return;
+      }
+      dealButton.disabled = true;
+      wagerInput.disabled = true;
+      await initialDeal();
+      startPlayerTurn();
+    }
+
+    // Event Listeners for game controls
+    dealButton.addEventListener("click", newRound);
+    hitButton.addEventListener("click", playerHit);
+    standButton.addEventListener("click", playerStand);
+    nextRoundButton.addEventListener("click", function() {
+      if (balance <= 0) {
+        messageDiv.textContent = "Game over! You're out of money.";
+        return;
+      }
+      dealButton.disabled = false;
+      wagerInput.disabled = false;
+      wagerInput.value = "";
+      resetRound();
+    });
+  </script>
+</body>
+</html>
