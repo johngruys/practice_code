@@ -57,8 +57,8 @@ enemy_counter = 0
 
 def create_enemies(num_enemies):
     for i in range(num_enemies):
-        # enemy_image.append(py.image.load("Games/Space Invaders/SIAssets/alien.png"))
-        enemy_image.append(py.image.load("Games/Space Invaders/SIAssets/smin.png"))
+        enemy_image.append(py.image.load("Games/Space Invaders/SIAssets/alien.png"))
+        # enemy_image.append(py.image.load("Games/Space Invaders/SIAssets/smin.png"))
         enemyX.append(random.randint(0, 736))
         enemyY.append(random.randint(50, 250))
         enemyX_change.append(random.randint(29, 42) / 10)
